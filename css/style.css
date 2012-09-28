@@ -1,0 +1,12 @@
+body
+{
+    margin: 0 auto;
+    font-size: 11px;
+    color: #000;
+    font-family: tahoma,arial,verdana,sans-serif;
+}
+#main
+{
+    width: 900px;
+    margin: 0 auto;
+}
