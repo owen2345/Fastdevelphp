@@ -14,6 +14,7 @@
 		private $results_query;
 		private $connection;
 		var $foreing_kes=array();
+        var $tables = array();
 		function FD_ConexionDB()
 		{
 			fd_log("\n\n--------------------VISITED AT: ".date("Y-m-d H:i:s")."--------------------", true);
@@ -26,7 +27,13 @@
     			$this->retractDB(NAME_DB, PREFIX_TABLE_IGNORE);    			
             }            
 		}
-        		
+        
+        /**
+         * Ejecuta una consulta SQL
+         * $query: consulta sql
+         * $show_query: opcion para imprimir el sql
+         * $skypeLog: deprecado
+         * */
 		function execQuery($query, $show_query = false, $skypeLog = false)
 		{
             if(!$skypeLog)
@@ -46,6 +53,9 @@
                 echo $query;
 		}
 		
+        /**
+         * retorna: un arreglo con keys numerales de la consulta realizada por execQuery()
+         * */
 		function getArrayResultsQuery()
 		{
 			$array_results=array();
@@ -56,6 +66,9 @@
 			return $array_results; 
 		}
 		
+        /**
+         * retorna: la respuesta a la consulta realizada por execQuery()
+         * */
 		function getResultsQuery()
 		{
 			$array_results=array();
@@ -66,6 +79,9 @@
 			return $array_results;			
 		}
 		
+        /**
+         * deprecado
+         * */
 		function getNewID($tabla,$columna)
 		{
             $consulta="SELECT IFNULL(MAX(".$columna."),0)+1 as idn FROM ".strtolower($tabla);
@@ -74,40 +90,77 @@
             return $aa["idn"]?$aa["idn"]:"NULL";
 		}
 		
+        /**
+         * deprecado
+         * */
 		function getKeysTable($table_name)
 		{
+            $table_name = ucwords($table_name);
+            if(key_exists($table_name, $this->foreing_kes))
+                return $this->foreing_kes[$table_name];
+                
 			$this->execQuery("SHOW COLUMNS FROM ".strtolower($table_name), false, true);
-			$fields = $this->getResultsQuery();			
-			$primary_keys=array();
-            $hasPrimaryKey = false;
+			$fields = $this->getResultsQuery();
+            $primary_key = "";
 			foreach($fields as $field)
 			{
 				$field["Field"]=strtolower($field["Field"]);
 				if($field["Key"] == "PRI")
 				{
-				    $hasPrimaryKey = true;
-					array_push($primary_keys,$field["Field"]);
+				    $this->foreing_kes[$table_name] = $primary_key = $field["Field"];				    
                     break;
 				}
 			}
-            if(!$hasPrimaryKey)
-                dieFastDevel("No existe Primary Key para la tabla $table_name.<br><br>Por favor verifique la tabla $tabla_name en la Base de Datos");
-			return $primary_keys;
+            
+            if(!$primary_key)
+                dieFastDevel("No existe Primary Key para la tabla $table_name.<br><br>Por favor verifique la tabla $tabla_name en la Base de Datos o Asigne fd_primary_key en el modelo.");
+                
+			return $primary_key;
 		}
+        
+        /**
+         * retorna: un array() con las tablas de la base de datos actual
+         **/
+        function getDatabaseTables()
+        {
+            $res = array();
+            $this->execQuery("SHOW TABLES FROM ".strtolower(NAME_DB), false, true);
+	        $tables=$this->getResultsQuery();
+            foreach($tables as $table)
+            {
+                if(PREFIX_TABLE_IGNORE && strpos(strtolower(current($table)), strtolower(PREFIX_TABLE_IGNORE)) === 0)
+                    continue;
+                $res[] = ucwords(current($table));
+            }
+            return $res;
+        }
+        
+        /**
+         * $table: nombre de la tabla
+         * retorna: un array() con las columnas de la tabla $table
+         **/
+        function getFieldsTable($table = null)
+        {
+            $this->execQuery("SHOW COLUMNS FROM ".strtolower($table), false, true);
+			return $this->getResultsQuery();
+        }
 		
+/**
+ * genera los modelos de las tablas de la base de datos $db ignorando las tablas que tengan como prefijo $prefix_ignore
+ * $db: nombre de la base de datos
+ * $prefix_ignore: string prefijo
+ * retorna: null
+ **/
 function retractDB($db, $prefix_ignore = "")
 {
-	$this->execQuery("SHOW TABLES FROM ".strtolower($db), false, true);
-	$tables=$this->getResultsQuery();
+	$tables = $this->getDatabaseTables();
 	foreach($tables as $table)
 	{
-	    if($prefix_ignore && strpos(strtolower(current($table)), strtolower($prefix_ignore)) === 0)
-            continue;
-		$this->foreing_kes[ucwords(current($table))]=$this->getKeysTable(ucwords(current($table)));
-		if(!file_exists(MODELS_PATH.ucwords(current($table)). '.php'))
+        $this->tables[] = strtolower($table);
+		if(!file_exists(MODELS_PATH.$table. '.php'))
 		{
-			$this->execQuery("SHOW COLUMNS FROM ".strtolower(current($table)), false, true);
-			$fields = $this->getResultsQuery();
+            $primary_key = $this->getKeysTable($table);
+			$fields = $this->getFieldsTable($table);
 			$textFields = "";
 			$textFieldsEqual = "";
 			$textFieldsConstruct = "";			
@@ -119,15 +172,18 @@ function retractDB($db, $prefix_ignore = "")
 					$textFieldsConstruct.=", ";
                 if(strtoupper($field["Default"]) == "NULL")
                     $textFieldsConstruct.= "\$".$field["Field"]." = null";
-				else
-                    $textFieldsConstruct.= "\$".$field["Field"]." = ''";				
+				elseif(is_numeric($field["Default"]))
+                    $textFieldsConstruct.= "\$".$field["Field"]." = ".$field["Default"];
+                else
+                    $textFieldsConstruct.= "\$".$field["Field"]." = ''";
+                                				
 				$textFields.= "
 	var \$".$field["Field"]."; ";
 				$textFieldsEqual.= "
 		\$this->".$field["Field"]." = \$".$field["Field"].";";
 			}
 			
-$fp = fopen(MODELS_PATH.ucwords(current($table)). '.php',"a+");
+$fp = fopen(MODELS_PATH.$table. '.php',"a+");
 fwrite($fp,"<?php
 /**
  * @package FastDevelPHP
@@ -138,13 +194,14 @@ fwrite($fp,"<?php
  * @version 1.0
  * @copyright 2009
  */ 
-class ".ucwords(current($table))." extends FD_ManageModel
+class ".$table." extends FD_ManageModel
 {	
     var \$alias_of_atributes = array();
     var \$fd_rules = array();
+    var \$fd_primary_key = '$primary_key';
 	$textFields
 	
-	function ".ucwords(current($table))."($textFieldsConstruct)
+	function __construct($textFieldsConstruct)
 	{
 		$textFieldsEqual
 	}

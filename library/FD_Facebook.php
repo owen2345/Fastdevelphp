@@ -37,7 +37,30 @@ class FD_Facebook
                 $this->setToken('');
         }
     }
-
+    
+    /**
+     * retorna la url de facebook para logearse.
+     */
+    function getLoginUrl($perms = array("publish_stream", "email"), $redirect_uri = null)
+    {
+        $redirect_uri = $redirect_uri?$redirect_uri:ROOT_PATH.$_GET["url_fastdevel"];
+        return "https://www.facebook.com/dialog/oauth?client_id=$this->app_id&redirect_uri=$redirect_uri&".implode(",", $perms); 
+    }
+    
+    /**
+     * retorna la url de facebook para deslogearse.
+     */
+    function getLogoutUrl($redirect_uri = null)
+    {
+        $redirect_uri = $redirect_uri?$redirect_uri:ROOT_PATH.$_GET["url_fastdevel"];
+        $FD =getInstance();
+        return "https://www.facebook.com/logout.php?next=$redirect_uri&access_token=".$FD->get_data("FB_TOKEN");
+    }
+    
+    /**
+     * funcion que se encarga de guardar los datos del visitante en la base de datos
+     * NOTA: customizable en funcion al proyecto.
+     */
     function saveVisitor($id_user)
     {
         $FD = getInstance();
@@ -49,7 +72,11 @@ class FD_Facebook
         if(!$Ruser)
             $FD->Connection->DB->create_object('fb_visitor', $datas)->save();
     }
-
+    
+    /**
+     * Guarda un token en la session
+     * return: null
+     */
     function setToken($access_token)
     {
         $FD = getInstance();
@@ -57,8 +84,8 @@ class FD_Facebook
     }
     
     /**
-     * Check the permisions for User $user_id
-     * return true => if all permisions $perms was accept, false => if any permision was denegate
+     * Verifica lo permisos para el usuario con $user_id
+     * return true => si todos los permisos $perms fueron aceptados, false => si alguno de ellos no fue aceptado
     **/
     function checkkPerms($perms = array(), $user_id = "me")
     {
@@ -73,7 +100,10 @@ class FD_Facebook
         }
         return $band;
     }
-
+    
+    /**
+     * Verifica si esta logeado en facebook
+     */
     function isLoged()
     {
         if($this->getUser())
@@ -83,7 +113,7 @@ class FD_Facebook
     }
     
 	/**
-     * return current facebook user
+     * obtiene los datos del usuario logedo
     */
 	function getUser($user_id = "me")
     {
@@ -104,7 +134,7 @@ class FD_Facebook
 	}
 	
     /**
-     * check currrent facebook user if is fan of current fan page
+     * Verifica si el usuario es fan de la page $object_id
     **/
 	function checkIfUserIsFan($object_id)
     {
@@ -128,7 +158,7 @@ class FD_Facebook
 	}
     
     /**
-     * return fan pages of current facebook user
+     * retorna las pages del usuario $user_id
     **/
     function getUserPages($user_id = "me")
     {
@@ -143,7 +173,7 @@ class FD_Facebook
     }
     
     /**
-     * return fan page complete info, such as page token, id, ...
+     * Obtiene la informacion completa de la page $page_id
     **/
     function getMyFanPage($page_id)
     {
@@ -156,8 +186,8 @@ class FD_Facebook
     }
     
     /**
-     * get the fanpage with id = $id_page
-     * return fanpage info
+     * 
+     * Obtiene la informacion completa de la page $page_id
     ***/
     function getFanPage($page_id)
     {
@@ -167,7 +197,7 @@ class FD_Facebook
     }
     
     /**
-     * get a Fanpage account info
+     * obtiene la informacion de la fanpage $pageid
     **/
     function getFanPageAccount($pageid)
     {
@@ -180,7 +210,7 @@ class FD_Facebook
     }
         
     /**
-     * get current fanpage info
+     * Obitiene la informacion completa de la visita
      * return a stdClass Object (    
         [algorithm] => HMAC-SHA256    
         [expires] => 0    
@@ -206,7 +236,8 @@ class FD_Facebook
     }
     
     /**
-     * verify if current fb_user is admin of $id_fanpage
+     * Verifica si el actual usuario es un admin de la fanpage $id_fanpage
+     * return: boolean
      **/
     function isAdmin($id_fanpage)
     {
@@ -219,6 +250,7 @@ class FD_Facebook
     }
     
     /**
+     * Registra un post en facebook
         $attachment =  array(
         'access_token' => $token,
         'message' => $msg,
@@ -227,7 +259,9 @@ class FD_Facebook
         'description' => $desc,
         'picture'=>$pic,
         'actions' => json_encode(array('name' => $action_name,'link' => $action_link))
-        );*/
+        );
+     * retorna Object
+     */        
     function sendFeed($datas, $to = "me")
     {
         $FD = getInstance();
@@ -246,8 +280,8 @@ class FD_Facebook
     }
     
     /**
-     * execute the facebook query
-     * return the query response
+     * Ejecuta una consulta sql a facebook
+     * return la respuesta de la consulta
     **/
     function query($query)
     {
@@ -260,8 +294,8 @@ class FD_Facebook
     
     
     /**
-     * install current app to fanpage $page_id
-     * return TRUE if is seccessfull or FALSE if had errors in the action
+     * Instala la aplicacion actual en la fanpage $page_id
+     * return boolean
     */
     function installAppToPage($page_id, $app_id = null)
     {
@@ -341,6 +375,10 @@ class FD_Facebook
         return $result;
     }
     
+    /**
+     * 
+     * Return: photos from user $user
+     */
     function getPhotos($idAlbum, $user = "me")
     {
         $FD = getInstance();
@@ -386,6 +424,9 @@ class FD_Facebook
         return $res->id;
     }
     
+    /**
+     * return photo info from $idphoto
+     */
     function photoInfo($idphoto)
     {
         $FD = getInstance();
@@ -461,6 +502,9 @@ class FD_Facebook
         curl_close ($ch);
     }
     
+    /**
+     * Add like to page $page_id
+     */
     function addLike($page_id)
     {
         $FD = getInstance();
@@ -469,6 +513,9 @@ class FD_Facebook
         return $res;
     }
     
+    /**
+     * Remove like from page $page_id
+     */
     function removeLike($page_id)
     {
         $FD = getInstance();
@@ -477,6 +524,10 @@ class FD_Facebook
         return $res;
     }
     
+    /**
+     * return all user friends from $user
+     * $user: string or number
+     */
     function getFriends($user = "me()")
     {
         return $this->query("SELECT uid,name,email,pic_square FROM user WHERE uid IN (SELECT uid1 FROM friend WHERE uid2=$user) ORDER BY first_name");

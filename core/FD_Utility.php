@@ -94,51 +94,20 @@ class FD_Utility
         $extension = $extension[count($extension)-1];
         return $extension;
     }
-    
-    function verifyErrorFileUpload($error)
-    {
-        if(!$error)
-            return "";
-            
-        switch($error)
-		{
-			case '1':
-				$error = 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
-				break;
-			case '2':
-				$error = 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form';
-				break;
-			case '3':
-				$error = 'The uploaded file was only partially uploaded';
-				break;
-			case '4':
-				$error = 'No file was uploaded.';
-				break;
-
-			case '6':
-				$error = 'Missing a temporary folder';
-				break;
-			case '7':
-				$error = 'Failed to write file to disk';
-				break;
-			case '8':
-				$error = 'File upload stopped by extension';
-				break;
-			case '999':
-			default:
-				$error = 'No error code avaiable';
-		}
-        return $error;
-    }
-    
+        
     /**
-     * Crea un dropdown o combobox a partir de un arreglo asociativo
+     * $attrsElement: atributos para el dropdown: name=>"", class=>"", ..
+     * $array_values: array de valores
+     * $selectedKeyValue: key seleccionado
+     * $text_default: texto por default
+     * $default: si es true, muestra el texto por default
+     * Retorna un dropdown con los parametros enviados
     */
-	
-	function createOptions($attrsElement = array(), $array_values = array(), $selectedKeyValue = "", $text_default = "Select an option")
+	function createOptions($attrsElement = array(), $array_values = array(), $selectedKeyValue = "", $text_default = "Select an option", $default = true)
 	{
 		$options = "<select ". $this->applyAttrs($attrsElement). ">";
-        $options .= "<option value=''> $text_default </option>";  
+        if($default)
+            $options .= "<option value=''> $text_default </option>";  
 		
         foreach($array_values as $key => $val)
 		{
@@ -149,13 +118,19 @@ class FD_Utility
 	}
 	
     /**
-     * Crea un dropdown o combobox a partir de un arreglo de objetos
+     * $attrsElement: atributos para el dropdown: name=>"", class=>"", ..
+     * $Objects: array de objetos DB
+     * $attrObjectText: nombre del atributo o nombre de funcion() a mostrar
+     * $selectedKeyValue: key seleccionado
+     * $text_default: texto por default
+     * $default: si es true, muestra el texto por default
+     * Retorna un dropdown con los parametros enviados
     */
-    
-	function createOptionsObject($attrsElement = array(), $Objects, $attrObjectText, $selectedKeyValue = "", $text_default = "Selecciona una opci&oacute;n")
+	function createOptionsObject($attrsElement = array(), $Objects, $attrObjectText, $selectedKeyValue = "", $text_default = "Selecciona una opci&oacute;n", $default = true)
 	{
 		$options = "<select ". $this->applyAttrs($attrsElement). ">";
-        $options .= "<option value=''> $text_default </option>";
+        if($default)
+            $options .= "<option value=''> $text_default </option>";
         
 		foreach($Objects as $Obj)
 		{
@@ -175,13 +150,17 @@ class FD_Utility
 	}
     
     /**
-     * Crea un grupo de checkbox buttons a partir de un arreglo de objetos
+     * $attrsElement: atributos para los checkbox: name=>"", class=>"", ..
+     * $Objects: array de objetos DB
+     * $attrObjectText: nombre del atributo o nombre de funcion() a mostrar
+     * $array_check_values: array de keys marcados (checked)
+     * Retorna un grupo de checkbox con los parametros enviados
     */
-    
-    function createGroupChecksObject($attrsPanelContenedor = array(), $Objects, $attrObjectText, $array_check_values = array())
+    function createGroupChecksObject($attrsElement = array(), $Objects, $attrObjectText, $array_check_values = array())
 	{
-		$options = "<div>";
-        
+	    $attrsElement["name"] = $attrsElement["name"]."[]";
+        $attrsElement["type"] = "checkbox";
+		$options = "<ul>";
 		foreach($Objects as $Obj)
 		{
 			$table_name=get_class($Obj);
@@ -192,56 +171,68 @@ class FD_Utility
             {   
                 $attrObjectText1 = explode("\(", $attrObjectText);                
                 $attrObjectText1 = $attrObjectText1[0];                
-                $options .= "<input ". $this->applyAttrs($attrsPanelContenedor). " type='checkbox' ".(key_exists("name", $attrsPanelContenedor)?"":"name = '".$name_obj."[".$primary_key."_".$Obj->$primary_key."]'")." value='".$Obj->$primary_key."' $sel  /> 
-				<span> ".$Obj->$attrObjectText1()." </span><br>";   
+                $options .= "<li><label><input ". $this->applyAttrs($attrsElement). " value='".$Obj->$primary_key."' $sel  /> 
+				<span> ".$Obj->$attrObjectText1()." </span></label></li>";
             }else
-                $options .= "<input ". $this->applyAttrs($attrsPanelContenedor). " type='checkbox' ".(key_exists("name", $attrsPanelContenedor)?"":"name = '".$name_obj."[".$primary_key."_".$Obj->$primary_key."]'")." value='".$Obj->$primary_key."' $sel  />
-				<span>  ".$Obj->$attrObjectText." </span><br>";
-			 
+                $options .= "<li><label><input ". $this->applyAttrs($attrsElement). " value='".$Obj->$primary_key."' $sel  />
+				<span>  ".$Obj->$attrObjectText." </span></label></li>";			 
 		}
-		return $options. "</div>";
+		return $options. "</ul>";
 	}
     
     /**
-     * Crea un grupo de checkbox buttons a partir de un arreglo de objetos
+     * $attrsElement: atributos para los checkbox: name=>"", class=>"", ..
+     * $array_values: array de valores
+     * $array_check_values: array de items seleccionados
+     * Retorna grupo de checkbox con los parametros enviados
     */
-    
-    function createGroupChecks($attrsPanelContenedor = array(), $name_check, $array_values = array(), $array_check_values = array())
+    function createGroupChecks($attrsElement = array(), $array_values = array(), $array_check_values = array())
 	{
-		$options = "<div ". $this->applyAttrs($attrsPanelContenedor). ">";
+	    $key = time().rand(9999, 9989);
+		$options = "<ul>";
+        if(in_array("name", $attrsElement))
+            $attrsElement["name"] = $attrsElement["name"]."[]";
+        else
+            $attrsElement["name"] = $key."[]";
+        $attrsElement["type"] = "checkbox";
+        
         foreach($array_values as $key => $val)
 		{
 			$sel= in_array($key, $array_check_values) ? " checked=''":"";
-			$options .= "<input type='checkbox' name = '".$name_check."[".$key."]' value='".$key."' $sel  /> <span>  ".$val." </span><br>";
-		}
-        
-		return $options. "</div>";
+			$options .= "<li><label><input ". $this->applyAttrs($attrsElement). " value='".$key."' $sel  /> <span>  ".$val." </span></label></li>";
+		}        
+		return $options. "</ul>";
 	}
     
     /**
-     * Crea un grupo de radio buttons a partir de un arreglo de objetos
-    */
-    
-	function createGroupRadios($attrsPanelContenedor = array(), $name_radio, $array_values = array(), $radio_check_value = "")
+     * $attrsElement: atributos para los radio buttons: name=>"", class=>"", ..
+     * $array_values: array de valores
+     * $radio_check_value: key seleccionado
+     * Retorna grupo de radio buttons con los parametros enviados
+    */    
+	function createGroupRadios($attrsElement = array(), $array_values = array(), $radio_check_value = "")
 	{
-		$options = "<div ". $this->applyAttrs($attrsPanelContenedor). ">";
+		$options = "<ul>";
         
         foreach($array_values as $key => $val)
 		{
 			$sel= $key == $radio_check_value ? " checked=''":"";
-			$options .= "<input type='radio' name = '".$name_radio."' value='".$key."' $sel  /> <span>  ".$val." </span><br>";
+			$options .= "<li><label><input type='radio' ". $this->applyAttrs($attrsPanelContenedor). " value='".$key."' $sel  /> <span>  ".$val." </span></label></li>";
 		}
-		return $options. "</div>";
+		return $options. "</ul>";
 	}
 	
     /**
-     * Crea un grupo de radio buttons a partir de un arreglo de objetos
+     * $attrsElement: atributos para los checkbox: name=>"", class=>"", ..
+     * $Objects: array de objetos DB
+     * $attrObjectText: nombre del atributo o nombre de funcion() a mostrar
+     * $radio_check_value: key seleccionado (checked)
+     * Retorna un grupo de radio buttons con los parametros enviados
     */
-    
-	function createGroupRadiosObject($attrsPanelContenedor = array(), $Objects, $attrObjectText, $radio_check_value = "")
+	function createGroupRadiosObject($attrsElement = array(), $Objects, $attrObjectText, $radio_check_value = "")
 	{
-		$options = "<div ". $this->applyAttrs($attrsPanelContenedor). ">";
-        
+		$options = "<ul>";
+        $attrsElement["type"] = "radio";
 		foreach($Objects as $Obj)
 		{
 			$table_name=get_class($Obj);
@@ -252,20 +243,20 @@ class FD_Utility
             {   
                 $attrObjectText1 = explode("\(", $attrObjectText);                
                 $attrObjectText1 = $attrObjectText1[0];                
-                $options .= "<input type='radio' name = '$primary_key' value='".$Obj->$primary_key."' $sel  /> 
-				<span> ".$Obj->$attrObjectText1()." </span><br>";   
+                $options .= "<li><label><input ". $this->applyAttrs($attrsElement). " value='".$Obj->$primary_key."' $sel  /> 
+				<span> ".$Obj->$attrObjectText1()." </span></label></li>";   
             }else
-                $options .= "<input type='radio' name = '$primary_key' value='".$Obj->$primary_key."' $sel  />
-				<span>  ".$Obj->$attrObjectText." </span><br>";
+                $options .= "<li><label><input ". $this->applyAttrs($attrsElement). " value='".$Obj->$primary_key."' $sel  />
+				<span>  ".$Obj->$attrObjectText." </span></label></li>";
 			 
 		}
-		return $options. "</div>";
+		return $options. "</ul>";
 	}
 	
     /**
-     * Requiere de la libreria ui.datepicker.js , ui.datepicker.css y jquery.js
-    */
-    
+     * crea un input de tipo calendario
+     * DEPRECADO
+    */    
 	function createCalendar($attributesInput=array())
 	{
 		$cal = "<input type='text' ". $this->applyAttrs($attributesInput). "/>";		
@@ -273,31 +264,10 @@ class FD_Utility
 		return $cal;
 	}
     
-    
     /**
-     * filter an object that have the conditions $conditions.
-     * Sample: array("name"=>"owen", ...) when name is attribute of each Object of $objects and owen can be the value of the attribute.
-    */
-    function filter_objects($objects, $conditions = array())
-    {
-        $res = array();
-        foreach($objects as $object)
-        {
-            $cant_cond = count($conditions);
-            foreach($conditions as $attr_cond=>$val_cond)
-            {
-                if($object->$attr_cond == $val_cond)
-                    $cant_cond--;
-            }
-            if(!$cant_cond)
-                array_push($res, $object);            
-        }
-        return $res;
-    }
-    
-    /**
-     * Crea un timeEntry 
+     * Crea un input de tipo timeEntry 
      * Requiere: libreria jquery.timeentry.js y jquery.js
+     * DEPRECADO
     */
     
 	function createTime($attributesInput=array())
@@ -318,6 +288,9 @@ class FD_Utility
 		return $res;
 	}
 	
+    /**
+     * Establece un header de tipo latino
+     */
 	function setHeaderLatin()
 	{
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
@@ -429,53 +402,14 @@ class FD_Utility
         return $res;
     }
     
+    /**
+     * recupera el tiempo real, usado para arreglar el las horas en los servidores
+     */
     function getRealTime($time)
     {
         return strtotime(date("Y-m-d H:i:s", $time) . " + ".TIME_DEFFERENCE." minutes");
     }
     
-    function deleteArrayObjects($Objects = array())
-    {
-        foreach($Objects as $o)
-        {
-            $o->delete();
-        }
-    }
-    
-    /**
-     * return array with sub arrays values, where each sub array contain the [0] = imageUploadName and [1] = imageResizeName, [2] = keyInputName
-    */
-    function uploadMultiplesFiles($names, $dirSave, $generateTumbnail = false, $input_title = "", $resizeW = 100, $resizeH = 100, $resizeMinW = 50, $resizeMinH = 50)
-    {        
-        $res = array();
-        foreach($_FILES["$names"]["name"] as $key=>$val)
-        {
-            if(!$_FILES["$names"]["name"][$key])
-                continue;
-            $name = $dirSave.time()."-".$_FILES["$names"]["name"][$key];
-            $name = preg_replace("/[^ A-Za-z0-9_|.|\/]/", "", $name);
-            move_uploaded_file($_FILES["$names"]["tmp_name"][$key], $name);
-            
-            // Bajar la calidad de la imagen
-            //$this->lowerQuality($name);
-            
-            if($generateTumbnail)
-            {
-                $resizeName = $this->resizeImageU($name, $resizeW, $resizeH, "tumbnail-");
-                //$resizeName = $this->wideImageResize($name, $resizeW, $resizeH, "tumbnail-");
-                $resizeNameS = $this->resizeImageU($name, $resizeMinW, $resizeMinH, "tumbnail-small-");
-                //$resizeNameS = $this->wideImageResize($name, $resizeMinW, $resizeMinH, "tumbnail-small-");
-            }
-            else
-            {
-                $resizeNameS = "";
-                $resizeName = "";
-            }
-            $name = str_replace("../images/", "", $name);
-            array_push($res, array("name"=>$name, "medium"=>$resizeName, "small"=>$resizeNameS, "key"=>$key, "title"=>$_POST["$input_title"][$key]?$_POST["$input_title"][$key]:str_replace($dirSave, "", $name)));
-        }
-        return $res;
-    }
     /**
      * $inputname: input form name
      * $dirSave: dir to upload the file
@@ -527,65 +461,14 @@ class FD_Utility
         return $res;
     }
     
-    function lowerQuality($file)
-    {
-        $image = WideImage::load($file);
-        
-        $fileName = $this->getFileNameWithExtension($file);
-        $dir = str_replace($fileName, "", $file);
-        $saveName = $dir.$fileName;
-        
-        $ext = substr($file, -3);
-        if(strtolower($ext) == 'jpg')
-            $image->saveToFile($saveName, 85);
-        if(strtolower($ext) == 'png')
-            $image->saveToFile($saveName, 8);
-        
-    }
-    
-    function wideImageResize($file, $w, $h, $prefijo)
-    {   
-        $image = WideImage::load($file);
-        $image_w = $image->getWidth();
-        $image_h = $image->getHeight();
-        
-        $fileName = $this->getFileNameWithExtension($file);
-        $dir = str_replace($fileName, "", $file);
-        $resizeName = $dir.$prefijo.$fileName;
-        
-        if($image_w/$image_h > 1.05)
-        {
-            $cropped = $image->crop('center', 'center', ($image_w/$image_h)*$w, ($image_w/$image_h)*$h);
-            $resized = $cropped->resize($w, $h, 'fill');
-            $resized->saveToFile($resizeName);
-        }
-        elseif($image_h/$image_w > 1.05)
-        {
-            $cropped = $image->crop('center', 'center', ($image_h/$image_w)*$w, ($image_h/$image_w)*$h);
-            $resized = $cropped->resize($w, $h, 'fill');
-            $resized->saveToFile($resizeName);
-        }
-        else
-        {
-            $resized = $image->resize($w, $h);
-            $resized->saveToFile($resizeName);
-        }
-        
-    }
-    
-    function resizeImageU($file, $w, $h, $prefijo)
-    {
-        $image = new FD_ResizeImage();
-        $image->load($file);
-        $image->resize($w,$h);
-        //$image->resizeToHeight($h);
-        $fileName = $this->getFileNameWithExtension($file);
-        $dir = str_replace($fileName, "", $file);
-        $resizeName = $dir.$prefijo.$fileName;
-        $image->save($resizeName);
-        return  str_replace("../images/", "", $resizeName);
-    }
-    
+    /**
+     * Crea un paginador con los datos enviados
+     * $total_items: number - total items
+     * $per_page: number - items por pagina
+     * $current_page: pagina actual
+     * $url: url de cada pagina
+     * $items_show: number - total paginas a mostrar
+     */   
     function create_paginator($total_items, $per_page = 4, $current_page = 1, $url, $items_show = 10)
     {
         if($total_items <= $per_page) 
@@ -628,30 +511,18 @@ class FD_Utility
         for($i=$start; $i<=$to; $i++ )
         {   
             if($i==$current_page)
-                $pag .= "<li class=activ ><a href=\"".$url."/ $i\">$i</a></li>" ;
+                $pag .= "<li style='float:left;' class='active' ><a href=\"".$url."/ $i\">$i</a></li>" ;
             else
-                $pag .= "<li class=num ><a href=\"".$url."/ $i\">$i</a></li>" ;
+                $pag .= "<li style='float:left;' class='num' ><a href=\"".$url."/ $i\">$i</a></li>" ;
         }
         
         if($start > 1)
-        $prev = '<li class="previous">'."<a href='".$url."/".($current_page-1)."'> &nbsp;&nbsp;</a></li>";
+        $prev = '<li style=\'float:left;\' class="previous">'."<a href='".$url."/".($current_page-1)."'> &lt;&lt;</a></li>";
         
         if( $to < $pages )
-          $next = '<li class="next">'."<a  href='".$url."/".($current_page+1)."'>&nbsp;&nbsp;</a></li>";
+          $next = '<li style=\'float:left;\' class="next">'."<a  href='".$url."/".($current_page+1)."'>&gt;&gt;</a></li>";
         
-        return '<ul id="pages">'    . $prev . $pag.$next. '</ul>';
-    }
-    
-    function generateSlug($phrase, $maxLength)
-    {
-        $result = strtolower($phrase);
-    
-        $result = preg_replace("/[^a-z0-9\s-]/", "", $result);
-        $result = trim(preg_replace("/[\s-]+/", " ", $result));
-        $result = trim(substr($result, 0, $maxLength));
-        $result = preg_replace("/\s/", "-", $result);
-    
-        return $result;
+        return '<ul id="pages" style=\'overflow:hidden; list-style: none;\'>'    . $prev . $pag.$next. '</ul>';
     }
 	
 	function viewDirectory($path)
@@ -662,46 +533,6 @@ class FD_Utility
 			echo $elemento."<br>";
 		}
 	}
-    
-    function embedFileName($file_name, $width = 320)
-    {
-        switch(strtolower($this->getExtensionFile($file_name)))
-        {
-            case "jpg":
-            case "png":
-            case "gif":
-            case "bmp":
-            case "jpeg":
-                return "<img aklt='' src='".$file_name."'>";
-            break;
-            
-            case "fla":
-            case "fla":
-            case "swf":
-            case "avi":
-            return '<object width="'.$width.'">
-                        <param name="movie" value="'.$file_name.'">
-                        <embed src="'.$file_name.'" width="'.$width.'">
-                        </embed>
-                    </object>';
-            break;
-            
-            case '<object codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6" type="application/x-oleobject" height="40">
-                        <param name="url" value="'.$file_name.'"/>
-                        <embed src="'.$file_name.'" height="40" type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"></embed> 
-                    </object>':
-            
-            break;
-            case "":
-            
-            break;
-            case "":
-            
-            break;
-            
-        }
-        
-    }
     
     function languageText($key_parraf, $key_value = "")
     {
@@ -718,52 +549,18 @@ class FD_Utility
                     "es"=>"Alquiler material para eventos",
                     "ca"=>"Lloguer de material per a festes",
                     "en"=>"Event equipment and furniture for hire"
-                    ),
-                    
-        "ambientes_menu" => array(
-                    "es"=>"AMBIENTES",
-                    "ca"=>"AMBIENTS",
-                    "en"=>"ATMOSPHERES"
-                    ),
-                    
-        "catalogo_menu" => array(
-                    "es"=>"CAT�LOGO",
-                    "ca"=>"CAT�LEG",
-                    "en"=>"CATALOG"
-                    ),
-                    
-        "proyectos_menu" => array(
-                    "es"=>"PROYECTOS",
-                    "ca"=>"PROJECTES",
-                    "en"=>"PROJECTS"
-                    ),
-                    
-        "contacto_menu" => array(
-                    "es"=>"CONTACTO",
-                    "ca"=>"CONTACT",
-                    "en"=>"CONTACT"
-                    ),
-        "msg_empty" => array(
-                    "es"=>"No existen items",
-                    "ca"=>"No existen items",
-                    "en"=>"Empty items"
-                    ),
-        "loading" => array(
-                    "es"=>"Cargando...",
-                    "ca"=>"Carregant...",
-                    "en"=>"Loading..."
-                    ),
-        "catalogo_label" => array(
-                    "es"=>"Cat�logo",
-                    "ca"=>"Cat�leg",
-                    "en"=>"Catalog"
                     )
-        )
-        ;
+        );
         
         return $text[$key_parraf][$key_value];
     }
     
+    /**
+     * Corta un texto en una cantidad de caracteres
+     * $text: texto completo
+     * $quantity: cantidad de caracteres
+     * return: (String) texto cortado - ideal para extraer resumen.
+     */
     function cutText($text, $quantity = 45)
     {
         $r = substr($text,0,strrpos(substr($text,0,$quantity)," "));
@@ -774,6 +571,26 @@ class FD_Utility
             return $text;
     }
     
+    function generateSlug($phrase, $maxLength)
+    {
+        $result = strtolower($phrase);
+    
+        $result = preg_replace("/[^a-z0-9\s-]/", "", $result);
+        $result = trim(preg_replace("/[\s-]+/", " ", $result));
+        $result = trim(substr($result, 0, $maxLength));
+        $result = preg_replace("/\s/", "-", $result);
+    
+        return $result;
+    }
+    
+    /**
+     * Envia email en formato html
+     * $to: para
+     * $title: titulo del email
+     * $content: contenido del email
+     * $from: email del que envia (opcional)
+     * retorna: true si a enviado bien, false si hubo error en el envio
+     */
     function sendEmail($to, $title, $content, $from="")
     {
     	if(mail($to, $title, $content, "From: $from \r\nContent-type: text/html\r\n"))
@@ -782,6 +599,11 @@ class FD_Utility
             return false;
     }
     
+    /**
+     * Convierte un xml a array
+     * retorna: un array con los valores del xml
+     * $contents: contenido del xml 
+     */
     function xml2array($contents, $get_attributes=1) 
     {
         if(!$contents) return array();
@@ -886,11 +708,9 @@ class FD_Utility
     
     /**
     *
-    * Convert an object to an array
-    *
-    * @param    object  $object The object to convert
-    * @reeturn      array
-    *
+    * Convierte un objeto en Array
+    * $object: Object DB
+    * return:  array
     */
     function objectToArray( $object )
     {
@@ -904,7 +724,12 @@ class FD_Utility
         }
         return array_map(array($this, "objectToArray"), $object );
     }
-
+    
+    /**
+     * Obtiene el video ID de youtube url
+     * $link: url del video de youtube
+     * return: ID
+     */
     function getYoutubeId($link = '')
     {
         preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $link, $matches);
@@ -912,10 +737,11 @@ class FD_Utility
 
     }
     /**
-     * Create a breadcrumb links
+     * crea un bradcrumb links
      * $current: current text
      * $Ancestors: ancestors links, format: array(link=>title)
-    ***/
+     * $prefix_text: Texto de inicio
+     */
     function breadcrumb($current, $Ancestors = array(), $prefix_text = "You are in: ")
     {
         $res = '';
@@ -929,8 +755,9 @@ class FD_Utility
     }
     
     /** 
-     * verify and fix path to file
-     * return path fixed for exist file
+     * verifica y corrije la existencia de $path, tambien corrige problemas de mayusculas
+     * $path: url de archivo o directorio
+     * return: (String) path corregido si existe el $path, sino retorna False
      */
     function checkPath($path)
     {
@@ -954,23 +781,6 @@ class FD_Utility
         }
         return $previous;
     }
-    
-    /**
-     * return a list of flash messages
-    */
-    function getFlashMessages()
-    {
-        $FD = getInstance();
-        if(!count($FD->Session->getFlashMessages()))
-            return;
-        $res = "<ul class='flash_messages'>";
-        foreach($FD->Session->getFlashMessages() as $FMessage)
-        {
-            $res = $res . "<li class='fm_".$FMessage["type"]."'>".$FMessage["message"]."</li>";
-        }
-        return $res."</ul>";
-    }
-    
 }
 
 ?>

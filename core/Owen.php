@@ -8,12 +8,20 @@
  * @version 1.0
  * @copyright 2009
  */
+
+/**
+ * Muestra mensaje de error $msg
+ */
 function dieFastDevel($msg)
 {
     include("../logs/dieFastDevel.php");
     exit;
 }
 
+/**
+ * Guarda el mensaje $log en los logs
+ * $skypeFileInfo: false - guarda la informacion del archivo, true - guarda la informacion de archivo
+ */
 function fd_log($log, $skypeFileInfo = false)
 {
     $debug = "";
@@ -24,7 +32,9 @@ function fd_log($log, $skypeFileInfo = false)
     fwrite($consolePHP, "\n\n".$log ."\n".$debug);
     fclose($consolePHP);
 }
-
+/**
+ * DEPRECATED
+ */
 function FD_getDebug($breakLine = "<br>")
 {
     $caller = debug_backtrace();
@@ -180,6 +190,10 @@ if($class->hasMethod($controllerFunction))
 else
     dieFastDevel("Not exist the function: \"$controllerFunction\" for \"$controllerName\"");
 
+/**
+ * Obtiene la instancia del controlador en cualquier lugar del proyecto
+ * Return: FD_Management Object
+ */
 function getInstance()
 {
     $aux = CONTROLLER_NAME.'_Controller';

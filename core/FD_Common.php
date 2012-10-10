@@ -17,13 +17,6 @@ class FD_Common
         
     }
     
-    function cropResizeFDP()
-    {
-        $IManage = new FD_ImageManage();
-        echo $IManage->crop_resize($_POST["imageSource"], "", $_POST["imageW"], $_POST["imageH"], $_POST["imageX"], $_POST["imageY"], 
-            $_POST["imageRotate"], $_POST["selectorX"], $_POST["selectorY"], $_POST["selectorW"], $_POST["selectorH"], $_POST["viewPortW"], $_POST["viewPortH"]);
-    }
-    
     function console()
     {
         if(ENABLE_CONSOLE == "false" || ENABLE_CONSOLE == "FALSE")
@@ -78,11 +71,11 @@ class FD_Common
     
     /**
      * sample: $this->FD_scaffold("user", array("login"=>"input", "nombres_u"=>"textarea"));
-    */
+    
     function FD_scaffold($tableName = "", $datas, $simple = true, $module_name = null)
     {
         new FD_Scafold($tableName, $datas, $this->Connection, $simple, $module_name);
-    }
+    }*/
 }
 
 ?>

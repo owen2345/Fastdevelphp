@@ -10,6 +10,9 @@
     </head>
     <body>
         <div id="main">
+            <h1>FastDevelPHP</h1>
+            <p><i>Framework de codigo libre para agilizar y estructurar el Desarrollo de Aplicaciones Web</i></p>
+            <br /><br />
             <?php echo $contentView ?>
         </div>
     </body>

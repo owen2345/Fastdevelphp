@@ -32,7 +32,9 @@ class FD_Management extends FD_Common
 	}
 	
     /**
-     * Set the layout for the views and initial $params (vars) for the layout
+     * establace un layour
+     * $layout: nombre del layout
+     * $params: parametros para el layout
      * @return null
     */
 	function useLayout($layout, $params=array())
@@ -44,7 +46,7 @@ class FD_Management extends FD_Common
 	}
     
     /**
-     * Clear the previus layout defined
+     * Limpia el layout definido
      * @return null
     */
     function clearLayout()
@@ -54,19 +56,23 @@ class FD_Management extends FD_Common
     }
 	
     /**
-     * Load a specific view located in: views/$view.php with Layout $layout or previus layout defined with useLayout()
-     * @param $view = view filename
-     * @param $params = vars for view
-     * @param $layout = Layout to use, this should be in layouts/$layout.php
-     * @param $paramsLayout = vars for the layout
+     * Carga la vista con layout
+     * $view = nombre de la vista en views/$view.php
+     * $params = parametros para la vista - 
+     *                  array(
+     *                       "nombre_variable_en_vista"=>"valor de variable",
+     *                       "nombre_var2"=>valor de variable2
+     *                       )
+     * $layout = nombre del layout ubicado en layouts/$layout.php, si es vacio usa definicion anterior
+     * $paramsLayout = parametros para layout
      * @return null
     */
 	function loadView($view, $params=array(), $layout="", $paramsLayout=array())
 	{
 		if(!is_array($params))
-            dieFastDevel("Error: el par�metro \"\$params\" de la funcion \"loadView()\" debe ser de tipo array()");
+            dieFastDevel("Error: el parámetro \"\$params\" de la funcion \"loadView()\" debe ser de tipo array()");
         if(!is_array($paramsLayout))
-            dieFastDevel("Error: el par�metro \"\$paramsLayout\" de la funcion \"loadView()\" debe ser de tipo array()");
+            dieFastDevel("Error: el parámetro \"\$paramsLayout\" de la funcion \"loadView()\" debe ser de tipo array()");
             
         $this->layout=$layout?$layout:$this->layout;
 		$this->paramsLayout=$paramsLayout?array_merge($this->paramsLayout, $paramsLayout):$this->paramsLayout;		
@@ -84,16 +90,17 @@ class FD_Management extends FD_Common
 	}
 	
     /**
-     * Load a view for a collection views, sample: multiples user profiles with the same view
-     * @param $collection = array(User1, $User2, ...)
-     * @param $alias = name of each item of $collection in the View
-     * @param $params = params for view
+     * Carga una vista sin layout por serie para cada item de $collection
+     * $view = nombre de la vista ubicada en views/$view.php
+     * $collection = un array de objetos
+     * $alias = nombre de la variable $collection[$i]
+     * $params = parametros para la vista
      * @return null 
     */
 	function loadCollectionView($view, $alias, $collection, $params = array())
 	{
 	    if(!is_array($params))
-            dieFastDevel("Error: el par�metro \"\$params\" de la funcion \"loadCollectionView()\" debe ser de tipo array()");
+            dieFastDevel("Error: el parámetro \"\$params\" de la funcion \"loadCollectionView()\" debe ser de tipo array()");
             
 		if(!count($collection))
             return;
@@ -115,7 +122,9 @@ class FD_Management extends FD_Common
 	}
 	
     /**
-     * Load the view without layout ideal for ajax or alternative to include()
+     * Carga una vista sn layout, ideal para ajax
+     * $view: nombre de la vista ubicada en views/$view.php
+     * $params = parametros para la vista
      * return null
     */
 	function loadPartialView($view, $params=array())
@@ -152,8 +161,9 @@ class FD_Management extends FD_Common
 	}
     
     /**
-     * execute shortcode tags such as [saludo msg='hola mundo']
-     * Each shortcode should be configured into FB_Config.php in $FD_Shortcodes variable
+     * ejecuta todos los shortcode tags como: [saludo msg='hola mundo']
+     * $content: contenido html o texto
+     * Nota: todos los shortcodes deben ser configurados en FD_config.php
      * return string
     */
     function do_shortCode($content = "")
@@ -200,6 +210,7 @@ class FD_Management extends FD_Common
     
     /**
      * Render another controller
+     * funcion deprecada
      * @return null
     **/
 	function renderController($controllerName, $functionName="index", $layout = "", $params_layout = array())
@@ -211,7 +222,10 @@ class FD_Management extends FD_Common
 	}
 	
     /**
-     * redirect the page to new url: ROOT_PATH.$controller/$function?$paramsGet
+     * redirecciona la pagina a: ROOT_PATH.$controller/$function?$paramsGet
+     * $controller: nombre del controlador
+     * $function: nombre de la funcion en $controller
+     * $paramsGet: parametros $_GET : nombre=owen&app=peredo
      * @return null
     **/
 	function redirect($controller, $function = "index", $paramsGet = "")
@@ -222,7 +236,8 @@ class FD_Management extends FD_Common
     
     
     /**
-     * Load a library Object with default parameters
+     * Carga una libreria $Classname con parametors $params
+     * $Classname: nombre de la clase y del archivo ubicado en library/$Classname.php
      * @return Library Object
     **/
 	function loadLibrary($Classname, $params = array())
@@ -255,14 +270,20 @@ class FD_Management extends FD_Common
 	}
         
     /**
-     * Load a Helper file
+     * Carga un helper
+     * $source: nombre del archivo ubicado en helpers/$source
      * @return null
     **/    
     function loadHelper($source)
 	{
 		loadFileFastDevel("../helpers/".$source);
 	}
-
+    
+    /**
+     * Carga una configuracion
+     * $source: nombre del archivo ubicado en confi/$source
+     * @return null
+    **/ 
     function loadConfig($source)
     {
         if(!in_array($source, $this->config_tmp))

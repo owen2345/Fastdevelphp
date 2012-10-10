@@ -11,11 +11,11 @@
  
 class FD_ManageDB
 {    
+    private $models = array();
     /**
-	 * Crea objetos de tipo $name_object a partir de la ejecucion de la consulta $sql.
-	 * $name_object: String nombre del obejto modelo
-	 * $sql: String Query
-	 * return: Array de objetos de tipo $name_object
+	 * $name_object: nombre de la tabla
+	 * $sql: condition sql
+	 * return: un arreglo de objetos de tipo $name_object
 	 */	
     function get_objects_By_Sql($name_object, $sql)
     {
@@ -31,6 +31,11 @@ class FD_ManageDB
 		return $objects;
     }
     
+    /**
+     * $name_object: nombre de tabla
+     * $where: condition sql
+     * Retorna la cantidad de objetos del tipo $name_object que cumplan la condicion $where
+     * */
     function countObjects($name_object, $where = "")
     {
         $FD = getInstance();
@@ -41,12 +46,11 @@ class FD_ManageDB
     }
 	
 	/**
-	 * Create objects  of type $name_object width datas extract from data base.
-	 * Parameters:
-	 * $name_object -> String Table name of data base or class name of a model.
-	 * $where         -> String Conditions for filter objects from data base.
-	 * 
-	 * Return:         return an array objects of type  $name_object.
+	 * $name_object: nombre de tabla
+	 * $where: condition sql
+	 * $order_by: name_attr ASC / name_attr DESC
+     * $limit: limit sql. Ejm: 0,10  => los primeros 10
+     * Retorna los objetos de tipo $name_object que cumplan la condicion $where ordenado por $order_by la cantidad $limit
 	 */
 	function get_objects($name_object, $where="", $order_by = "", $limit = "")
 	{
@@ -62,7 +66,13 @@ class FD_ManageDB
 		return $objects;
 	}
     
-    function get_last_object($name_object, $where="", $order_by = "", $limit = "")
+    /**
+     * $name_object: nombre de tabla
+     * $where: condition sql
+     * $order_by: name_attr ASC / name_attr DESC
+     * Retorna el ultimo objeto de tipo $name_object que cumplan la condicion $where ordenado por $order_by
+     * */
+    function get_last_object($name_object, $where="", $order_by = "")
 	{
 	    $FD = getInstance();
 		$primary_key = $this->getPrimaryKey($name_object);
@@ -74,7 +84,13 @@ class FD_ManageDB
             return false;		
 	}
     
-    function get_first_object($name_object, $where="", $order_by = "", $limit = "")
+    /**
+     * $name_object: nombre de tabla
+     * $where: condition sql
+     * $order_by: name_attr ASC / name_attr DESC
+     * Retorna el primer objeto de tipo $name_object que cumplan la condicion $where ordenado por $order_by
+     * */
+    function get_first_object($name_object, $where = "", $order_by = "")
 	{
 		$r = $this->get_object($name_object, $where, $order_by, "0,1");
         if($r)
@@ -86,41 +102,9 @@ class FD_ManageDB
 	}
 	
 	/**
-	 * Create objects  of type $name_object width datas extract from data base.
-	 * Parameters:
-	 * $name_object -> String Table name of data base or class name of a model.
-	 * $where         -> String Conditions for filter objects from data base.
-	 * 
-	 * Return:         return an array objects of type  $name_object.
-	 */
-	function get_objects_children($name_object, $where="", $childrens = array())
-	{
-	    $FD = getInstance();
-		$FD->Connection->SQL->execQuery("select * from ".strtolower($name_object)." ".($where?" where ".$where:""));
-		$objects_db=$FD->Connection->SQL->getResultsQuery();
-		$objects=array();
-		foreach($objects_db as $object_row)
-		{
-			$object = $this->create_object($name_object, $object_row);
-			$childrens_object = array();			
-			foreach($childrens as $children)
-			{				
-                $primary_key = $this->getPrimaryKey(get_class($object));
-				$childrens_object[$children]=$this->get_objects($children, "$primary_key=".$object->$primary_key);
-			}
-			$object->objects_children = $childrens_object; 
-			array_push($objects,$object);
-		}
-		return $objects;
-	}
-	
-	/**
-	 * Create object of type $name_object width datas extract from data base.
-	 * Parameters:
-	 * $name_object -> String Table name of data base or class name of a model.
-	 * $id            -> Number Identifier of the $name_object object into data base.
-	 * 
-	 * Return:         return an object of type  $name_object.
+	 * $name_object: nombre de la tabla
+     * $id: id del objeto
+     * retorna: un objeto de tipo $name_object
 	 */	
 	function get_object_by_id($name_object, $id="")
 	{
@@ -130,35 +114,41 @@ class FD_ManageDB
 		return $this->get_object($name_object, "$primary_key = '$id' ");
 	}
     
-    /** 
-	 * Return:         return an object of type  $name_object, filtered by attribute $name_attr.
-	 */	
+    /**
+	 * $name_object: nombre de la tabla
+     * $id: id del objeto
+     * $name_attr: nombre del atributo
+     * $val_attr: valor del atributo
+     * retorna: el primer objeto de tipo $name_object con atributo $name_attr = $val_attr
+	 */		
 	function get_object_by_attribute($name_object, $name_attr, $val_attr = "")
 	{
 		return $this->get_object($name_object, "$name_attr = '$val_attr'");
 	}
     
-    /** 
-	 * Return:         return an array of objects of type  $name_object, filtered by attribute $name_attr.
-	 */	
+    /**
+	 * $name_object: nombre de la tabla
+     * $id: id del objeto
+     * $name_attr: nombre del atributo
+     * $val_attr: valor del atributo
+     * retorna: los objetos de tipo $name_object con atributo $name_attr = $val_attr
+	 */			
 	function get_objects_by_attribute($name_object, $name_attr, $val_attr = "")
 	{
 		return $this->get_objects($name_object, "$name_attr = '$val_attr'");
 	}
 	
 	/**
-	 * Create object of type $name_object width datas extract from data base.
-	 * Parameters:
-	 * $name_object -> String Table name of data base or class name of a model.
-	 * $where         -> String Conditions for filter object from data base.
-	 * 
-	 * Return:         return an object of type  $name_object, 
-	 *                 when this object is empty => the return value is false .
+     * $name_object: nombre de la tabla
+     * $where: condicion sql
+     * $order_by: name_attr ASC / name_attr DESC
+     * $limit: limit sql. Ejm: 0,10  => los primeros 10
+     * retorna: el primer objeto de tipo $name_object que cumple condicion $where ordenado por $order_by, si el objeto no existe retorna false
 	 */
-	function get_object($name_object, $where="", $order_by = "", $limit = "")
+	function get_object($name_object, $where="", $order_by = "")
 	{
 	    $FD = getInstance();
-		$FD->Connection->SQL->execQuery("select * from ".strtolower($name_object)." ".($where?" where ".$where:""). " ".($order_by?" order by ".$order_by:"")." ".($limit?" limit ".$limit:""));
+		$FD->Connection->SQL->execQuery("select * from ".strtolower($name_object)." ".($where?" where ".$where:""). " ".($order_by?" order by ".$order_by:""));
 		$objects_db=$FD->Connection->SQL->getResultsQuery();
 		$object_row=current($objects_db);
 		$object = $this->create_object($name_object,$object_row);		
@@ -169,18 +159,14 @@ class FD_ManageDB
 	}
 	
 	/**
-	 * Create object of type $name_object width datas that have send in $array_valores.
-	 * Parameters:
-	 * $name_object -> String class name of a model.
-	 * $array_valores -> Array Values width the witch is filled the attributes of this object.
-	 * 
-	 * Return:         return an object of type  $name_object.
-	 * 
-	 * Note: 		   This array can have keys that are the names of attributes of the model. 
-	 * sample: 		   array('name'=>'owen', "app"=>"peredo").
+     * $name_object: nombre de la tabla
+     * $array_valores: valores para el objeto
+     * $postfix: postfijo para el nombre de los atributos en $array_valores, ejm: _user
+     * retorna: el objeto $name_object con los valores $array_valores
 	 */
 	function create_object($name_object,$array_valores=array(), $postfix = "")
-	{	
+	{
+        $this->checkModel($name_object);
 	    $FD = getInstance();
 		$object = new $name_object;
 		if($array_valores)
@@ -203,7 +189,7 @@ class FD_ManageDB
 		return $object;
 	}
     
-    function getAttrVal($name_atribut, $array_valores, $alias_attrs)
+    protected function getAttrVal($name_atribut, $array_valores, $alias_attrs)
     {
         if(array_key_exists($name_atribut,$array_valores))
             return $name_atribut;
@@ -222,10 +208,7 @@ class FD_ManageDB
     }
 	
 	/**
-	 * Save the attribute value of a Object into data base in the table 
-	 * with equal name to class_name of this object.
-	 * 
-	 * Return:         return $object.
+     * funcion llamada por los modelos.
 	 */
 	function save_object($object, $generateKeyObject = true)
 	{
@@ -275,11 +258,8 @@ class FD_ManageDB
 	}
 	
 	/**
-	 * Update the attribute value of a Object into data base in the table 
-	 * with equal name to class_name of this object.
-	 * 
-	 * Return:         return void.
-	 */	
+     * funcion llamada por los modelos.
+	 */
 	function update_object($object)
 	{
 	    $FD = getInstance();
@@ -309,10 +289,8 @@ class FD_ManageDB
 				
 		}
 		$condicion="";
-		foreach($FD->Connection->SQL->foreing_kes[$table_name] as $key)
-		{
-			$condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
-		}
+        $key = $this->getPrimaryKey($table_name);
+        $condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
 					
 		$consulta="UPDATE ".strtolower($table_name)." SET $vals_object WHERE ".$condicion;        
 		$FD->Connection->SQL->execQuery($consulta);
@@ -321,10 +299,7 @@ class FD_ManageDB
 	}
 	
 	/**
-	 * Delete row of data base with equal table name to object clas_name and 
-	 * identifier is equal to object_identifier.
-	 * 
-	 * Return:         return void.
+     * funcion llamada por los modelos.
 	 */
 	function delete_object($object)
 	{ 
@@ -336,23 +311,41 @@ class FD_ManageDB
 		$condicion="";
         if($class->hasMethod("onDelete"))
             $object->onDelete();
-		foreach($FD->Connection->SQL->foreing_kes[$table_name] as $key)
-		{
-			$condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
-		}		
+        $key = $this->getPrimaryKey($table_name);
+        $condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
 		$consulta="DELETE FROM ".strtolower($table_name)." WHERE $condicion";
 		$FD->Connection->SQL->execQuery($consulta);
         if($class->hasMethod("afterDelete"))
             $object->afterDelete();
 	}
     
+    /**
+     * funcion llamada por los modelos.
+	 */
     function getPrimaryKey($name_object)
     {
+        $this->checkModel($name_object);
+        $name_object = ucwords($name_object);
         $FD = getInstance();
-        if(key_exists(ucwords($name_object), $FD->Connection->SQL->foreing_kes))        
-            return $FD->Connection->SQL->foreing_kes[ucwords($name_object)][0];
+        
+        $class = new ReflectionClass($name_object);
+        if($class->hasProperty("fd_primary_key"))
+            return $class->getProperty("fd_primary_key")->getValue();
+        
+        $key = $FD->Connection->SQL->getKeysTable($name_object);
+        if($key)
+            return $key;
         else
-            dieFastDevel("No existe la tabla '".ucwords($name_object)."'. <br>");        
+            dieFastDevel("No existe la tabla '".$name_object."'. <br>");        
+    }
+    
+    private function checkModel($name_object)
+    {
+        $FD = getInstance();
+        if(in_array(strtolower($name_object), $FD->SQL->tables))
+            return true;
+        else
+            dieFastDevel("No existe el modelo '".$name_object."'. <br>");
     }
 }
 
