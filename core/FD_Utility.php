@@ -5,7 +5,7 @@
  * @email owen@sysdecom.com
  * @company Systems Development Company "Sysdecom" srl.
  * @license All rights reservate
- * @version 1.0
+ * @version 2.0
  * @copyright 2009
  */
 
@@ -411,31 +411,29 @@ class FD_Utility
     }
     
     /**
-     * $inputname: input form name
-     * $dirSave: dir to upload the file
-     * $support_types: type files for upload
-     * $maximum: max file  size
-     * if file exist, return an array(error= true/false, msg=string, file=filesaved_name)
-     * if file not exist, return false
+     * $inputname: campo input file del formulario
+     * $dirSave: directorio en el que se va a guardar el archivo
+     * $support_types: array con los formatos permitidos, si es null soporta todos los formatos
+     * $maximum: numero en bytes como tamano maximo a subir, si es vacio soporta el maximo definido en php.ini
+     * retorna: array(error= true/false, msg=string, file=filesaved_name), si el archivo no existe retorna FALSE
     */
-    function uploadFile($inputname, $dirSave, $support_types = array('gif', 'jpg', 'jpeg', 'png'), $maximum = 500000)
+    function uploadFile($inputname, $dirSave, $support_types = null, $maximum = null)
     {
-        return $this->upload_file($_FILES[$inputname]['name'], $_FILES[$inputname]['tmp_name'], $dirSave, $support_types, $maximum);
+        return $this->uploadFileByTmpname($_FILES[$inputname]['name'], $_FILES[$inputname]['tmp_name'], $dirSave, $support_types, $maximum);
     }
     
     /**
-     * $inputname: input form filename
-     * $tmpname: input form tmpname
-     * $dirSave: dir to upload the file
-     * $support_types: type files for upload
-     * $maximum: max file  size
-     * if file exist, return an array(error= true/false, msg=string, file=filesaved_name)
-     * if file not exist, return false
+     * $filename: nombre con el que se va a guardar el archivo
+     * $tmpname: tmpname del archivo a subir, ejm: $_FILES["mi_campo"]['tmp_name']
+     * $dirSave: directorio en el que se va a guardar el archivo
+     * $support_types: array con los formatos permitidos, si es null soporta todos los formatos
+     * $maximum: numero en bytes como tamano maximo a subir, si es vacio soporta el maximo definido en php.ini
+     * retorna: array(error= true/false, msg=string, file=filesaved_name), si el archivo no existe retorna FALSE
     */
-    function upload_file($filename, $tmpname, $dirSave, $support_types = array('gif', 'jpg', 'jpeg', 'png'), $maximum = 500000)
+    function uploadFileByTmpname($filename, $tmpname, $dirSave, $support_types = null, $maximum = null)
     {
         $FD = getInstance();
-        $Upload = $FD->loadLibrary("Upload");
+        $Upload = $FD->loadLibrary("FD_Upload");
         $res = array("error"=>false, "file"=>"", "msg"=>"");
         if($tmpname) 
         {

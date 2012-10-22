@@ -5,7 +5,7 @@
  * @email owen@sysdecom.com
  * @company Systems Development Company "Sysdecom" srl.
  * @license All rights reservate
- * @version 1.0
+ * @version 2.0
  * @copyright 2009
  */
 class FD_Management extends FD_Common
@@ -17,6 +17,7 @@ class FD_Management extends FD_Common
     var $Session;
     var $DB;
     var $SQL;
+    var $Url;
     private $config_tmp = array();
     static $_instance;
 	function FD_Management()
@@ -29,6 +30,7 @@ class FD_Management extends FD_Common
         $this->Utility = new FD_Utility();
         $this->Session = new FD_Session($this->Connection); 
         $this->Session->updateFlashMessage();
+        $this->Url = new FD_Url();
 	}
 	
     /**

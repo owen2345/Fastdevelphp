@@ -4,11 +4,11 @@
  * validate their files.
  *
  * @author John Ciacia <Sidewinder@extreme-hq.com>
- * @version 1.0
+ * @version 2.0
  * @copyright Copyright (c) 2007, John Ciacia
  * @license http://opensource.or...gpl-license.php GNU Public License
  */
-class Upload {
+class FD_Upload {
         
         /**
          *@var string contains the name of the file to be uploaded.
@@ -51,7 +51,7 @@ class Upload {
          */
         var $MaximumHeight;
 
-        function Upload()
+        function __construct()
         {
 
         }
@@ -201,21 +201,6 @@ class Upload {
                 return true;
         }
 
-        /**
-         *@method bool SendMail() sends an email log to the administrator
-         *@return true the email was sent.
-         *@return false never.
-         *@todo create a more information-friendly log.
-         */
-        function SendMail() {
-                $To = $this->Email;
-                $Subject = "File Uploaded";
-                $From = "From: Uploader";
-                $Message = "A file has been uploaded.";
-                mail($To, $Subject, $Message, $From);
-                return true;
-        }
-
 
         /**
          *@method bool UploadFile() uploads the file to the server after passing all the validations.
@@ -292,11 +277,6 @@ class Upload {
         function SetMaximumFileSize($argv)
         {
                 $this->MaximumFileSize = $argv;
-        }
-
-        function SetEmail($argv)
-        {
-                $this->Email = $argv;
         }
    
         function SetIsImage($argv)

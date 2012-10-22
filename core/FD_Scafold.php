@@ -6,7 +6,7 @@
  * @email owen@sysdecom.com
  * @company Systems Development Company "Sysdecom" srl.
  * @license All rights reservate
- * @version 1.0
+ * @version 2.0
  * @copyright 2009
  */
 
@@ -382,7 +382,7 @@ fwrite($fp,"<?php
  * @email owen@sysdecom.com
  * @company Systems Development Company \"Sysdecom\" srl.
  * @license All rights reservate
- * @version 1.0
+ * @version 2.0
  * @copyright 2009
  */ 
 class ".ucwords($className)."_Controller extends FD_Management
@@ -483,7 +483,7 @@ fwrite($fp,"<?php
  * @email owen@sysdecom.com
  * @company Systems Development Company \"Sysdecom\" srl.
  * @license All rights reservate
- * @version 1.0
+ * @version 2.0
  * @copyright 2009
  */ 
 class ".ucwords($className)."_Controller extends FD_Management
