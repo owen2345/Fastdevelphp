@@ -94,9 +94,6 @@ function __autoload($class_name)
     }
 }
 
-//session_set_cookie_params(43200);` // set the session lifetime
-
-session_start();
 include("../confi/FD_Config.php");
 
 /** unstrip $_post slashes**/
