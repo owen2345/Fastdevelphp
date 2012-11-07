@@ -1098,6 +1098,10 @@ body.scaffold table tbody td
 {
     padding: 2px !important;
 }
+body.scaffold input, body.scaffold select, body.scaffold textarea
+{
+    padding: 7px 4px !important;
+}
 
 
 

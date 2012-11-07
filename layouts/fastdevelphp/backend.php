@@ -15,11 +15,9 @@
     
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery-ui-1.8.11.custom.min.js"></script>
-	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery-settings.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/toogle.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.tipsy.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.uniform.min.js"></script>
-	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/popup.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/fullcalendar.min.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.prettyPhoto.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.ui.core.js"></script>
