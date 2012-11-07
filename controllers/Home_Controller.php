@@ -13,7 +13,7 @@ class Home_Controller extends FD_Management
 	function __construct()
 	{
         parent::__construct();
-        $this->useLayout("public");
+        $this->useLayout("fastdevelphp/ui_scaffold");
 	}
     
     function index()

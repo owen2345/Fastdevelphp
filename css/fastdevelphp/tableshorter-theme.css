@@ -1,0 +1,12 @@
+/* tables */
+table {font-family:arial;background-color: #CDCDCD;margin:0px 0pt 0px;font-size: 12px;width: 100%;text-align: left; }
+table th, table tfoot tr th { background:#EFF3F8 url(../../images/fastdevelphp/tableshorter/titlebg.png) repeat-x bottom;border: 1px solid #CBDAE8; border-top:none; border-bottom:none; font-size: 8pt;padding: 12px;}
+table.tablesorter tr th {  padding-right: 16px; background-image:url(../../images/fastdevelphp/tableshorter/bg.gif);background-repeat: no-repeat;background-position: center right;cursor: pointer; color:#333;}
+table tbody td {color: #3D3D3D;padding: 12px;background-color: #FFF;vertical-align: top;border:1px solid #D8E4E9; color:#6C7D8C;}
+table tbody tr.odd td {background-color:#D7D7D7;}
+table tbody td:hover{background-color:#F8FAFB;}
+table thead tr .headerSortUp {background-image:url(../../images/fastdevelphp/tableshorter/bg.gif);}
+table thead tr .headerSortDown {background-image:url(../../images/fastdevelphp/tableshorter/desc.gif);}
+table thead tr .headerSortDown, th.sorted, table thead tr .headerSortUp {background-color: #E0E8F1;}
+table tr:hover{background:#F8FAFB;}
+table tr:hover td{background:none;}

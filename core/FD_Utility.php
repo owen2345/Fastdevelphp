@@ -160,7 +160,7 @@ class FD_Utility
 	{
 	    $attrsElement["name"] = $attrsElement["name"]."[]";
         $attrsElement["type"] = "checkbox";
-		$options = "<ul>";
+		$options = "<ul class='list_checkboxs'>";
 		foreach($Objects as $Obj)
 		{
 			$table_name=get_class($Obj);
@@ -189,7 +189,7 @@ class FD_Utility
     function createGroupChecks($attrsElement = array(), $array_values = array(), $array_check_values = array())
 	{
 	    $key = time().rand(9999, 9989);
-		$options = "<ul>";
+		$options = "<ul class='list_checkboxs'>";
         if(in_array("name", $attrsElement))
             $attrsElement["name"] = $attrsElement["name"]."[]";
         else
@@ -212,7 +212,7 @@ class FD_Utility
     */    
 	function createGroupRadios($attrsElement = array(), $array_values = array(), $radio_check_value = "")
 	{
-		$options = "<ul>";
+		$options = "<ul class='list_radios'>";
         
         foreach($array_values as $key => $val)
 		{
@@ -231,7 +231,7 @@ class FD_Utility
     */
 	function createGroupRadiosObject($attrsElement = array(), $Objects, $attrObjectText, $radio_check_value = "")
 	{
-		$options = "<ul>";
+		$options = "<ul class='list_radios'>";
         $attrsElement["type"] = "radio";
 		foreach($Objects as $Obj)
 		{
@@ -515,10 +515,17 @@ class FD_Utility
         }
         
         if($start > 1)
-        $prev = '<li style=\'float:left;\' class="previous">'."<a href='".$url."/".($current_page-1)."'> &lt;&lt;</a></li>";
+        {
+            $prev = '<li style=\'float:left;\' class="first">'."<a href='".$url."/1'> &lt;&lt;</a></li>";
+            $prev .= '<li style=\'float:left;\' class="previous">'."<a href='".$url."/".($current_page-1)."'> &lt;</a></li>";
+        }
         
         if( $to < $pages )
-          $next = '<li style=\'float:left;\' class="next">'."<a  href='".$url."/".($current_page+1)."'>&gt;&gt;</a></li>";
+        {
+          $next = '<li style=\'float:left;\' class="next">'."<a  href='".$url."/".($current_page+1)."'>&gt;</a></li>";
+          $next .= '<li style=\'float:left;\' class="last">'."<a  href='".$url."/$pages'>&gt;&gt;</a></li>";
+        }
+          
         
         return '<ul id="pages" style=\'overflow:hidden; list-style: none;\'>'    . $prev . $pag.$next. '</ul>';
     }

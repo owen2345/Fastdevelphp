@@ -189,7 +189,10 @@ class FD_ManageDB
 		return $object;
 	}
     
-    protected function getAttrVal($name_atribut, $array_valores, $alias_attrs)
+    /**
+     * funcion usada por manage_model
+     */
+    function getAttrVal($name_atribut, $array_valores, $alias_attrs)
     {
         if(array_key_exists($name_atribut,$array_valores))
             return $name_atribut;
@@ -330,7 +333,7 @@ class FD_ManageDB
         
         $class = new ReflectionClass($name_object);
         if($class->hasProperty("fd_primary_key"))
-            return $class->getProperty("fd_primary_key")->getValue();
+            return $this->create_object($name_object)->fd_primary_key;
         
         $key = $FD->Connection->SQL->getKeysTable($name_object);
         if($key)

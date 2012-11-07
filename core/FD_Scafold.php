@@ -103,14 +103,16 @@ class FD_Scafold
         foreach($this->datas as $data_val)
         {
             $attrName = $data_val["fieldname"];
-            $rules = implode(", ", $data_val["rule"]);
-            echo $rules."<br>";
+            $rules = "";
+            if(isset($data_val["rule"]))
+                $rules = implode(", ", $data_val["rule"]);
+            //echo $rules."<br>";
             switch(strtolower($data_val["fieldtype"]))
             {
                 case "textarea":
                     $val_attr = "\$".$className."->$attrName";
                     $this->default_values[] = "'$attrName' => '". str_replace("'", "\'", $data_val["textarea"])."'";
-                    $typeHtml = "<textarea name='$attrName' class='$rules' ><?php echo \$".$className."->$attrName ?></textarea>";
+                    $typeHtml = "<textarea name='$attrName' class='input_textarea $rules' ><?php echo \$".$className."->$attrName ?></textarea>";
                 break;
                 
                 case "select":
@@ -121,7 +123,7 @@ class FD_Scafold
                         $aux[] = " \"$ki\" => \"".str_replace("\"", '\"', $vi)."\"";
                     $this->params_view .= "
         \$data['$aux_name'] = array(".join(", ", $aux).");";
-                    $typeHtml = "<?php echo \$this->Utility->createOptions(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, \$".$className."->$attrName) ?>";
+                    $typeHtml = "<?php echo \$this->Utility->createOptions(array(\"name\"=>\"$attrName\", \"class\"=>\"input_select $rules\"), \$$aux_name, \$".$className."->$attrName) ?>";
                 break;
                 
                 case "select_object":                    
@@ -129,7 +131,7 @@ class FD_Scafold
                     $val_attr = "\$this->DB->get_object_by_id('".$data_val["model"]."', $".$className."->$attrName)?\$this->DB->get_object_by_id('".$data_val["model"]."', $".$className."->$attrName)->".$data_val["attr_show"].":'No definido';";
                     $this->params_view .= "
         \$data['$aux_name'] = \$this->DB->get_objects('".$data_val["model"]."', '".str_replace("'", "\'", $data_val["cond_sql"])."');";
-                    $typeHtml = "<?php echo \$this->Utility->createOptionsObject(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, '".$data_val["attr_show"]."', \$".$className."->$attrName); ?>";                    
+                    $typeHtml = "<?php echo \$this->Utility->createOptionsObject(array(\"name\"=>\"$attrName\", \"class\"=>\"input_select $rules\"), \$$aux_name, '".$data_val["attr_show"]."', \$".$className."->$attrName); ?>";                    
                 break;
                 
                 case "checkbox_object":
@@ -137,7 +139,7 @@ class FD_Scafold
                     $aux_name = $this->getVarName(ucwords($data_val["checkbox_model"])."s");
                     $this->params_view .= "
         \$data['$aux_name'] = \$this->DB->get_objects('".$data_val["checkbox_model"]."', '".str_replace("'", "\'", $data_val["checkbox_cond_sql"])."');";
-                    $typeHtml = "<?php echo \$this->Utility->createGroupChecksObject(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, '".$data_val["checkbox_attr_show"]."', array(\$".$className."->$attrName)); ?>";
+                    $typeHtml = "<?php echo \$this->Utility->createGroupChecksObject(array(\"name\"=>\"$attrName\", \"class\"=>\"input_checkbox $rules\"), \$$aux_name, '".$data_val["checkbox_attr_show"]."', array(\$".$className."->$attrName)); ?>";
                 break;
                 
                 case "radio_object":
@@ -145,14 +147,14 @@ class FD_Scafold
                     $aux_name = $this->getVarName(ucwords($data_val["radio_model"])."s");
                     $this->params_view .= "
         \$data['$aux_name'] = \$this->DB->get_objects('".$data_val["radio_model"]."', '".str_replace("'", "\'", $data_val["radio_cond_sql"])."');";
-                    $typeHtml = "<?php echo \$this->Utility->createGroupRadiosObject(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, '".$data_val["radio_attr_show"]."', \$".$className."->$attrName); ?>";
+                    $typeHtml = "<?php echo \$this->Utility->createGroupRadiosObject(array(\"name\"=>\"$attrName\", \"class\"=>\"input_radio $rules\"), \$$aux_name, '".$data_val["radio_attr_show"]."', \$".$className."->$attrName); ?>";
                 break;
                 
                 case "file":
                     $val_attr = "$".$className."->$attrName?\"<img width='50' alt='' src='\".ROOT_PATH.\"uploads/\".\$".$className."->$attrName.\"'>\":'No definido';";
                     $encitype = "multipart/form-data";
                     
-                    $typeHtml = "<input type='file' name='file_$attrName' class='$rules' />
+                    $typeHtml = "<input type='file' name='file_$attrName' class='input_file $rules' />
                                 <?php if(\$".$className."->$attrName): ?>
                                     <img width='50' alt='' src='<?php echo ROOT_PATH.\"uploads/\".\$".$className."->$attrName ?>'>
                                 <?php endif ?>";
@@ -185,7 +187,7 @@ class FD_Scafold
                     $this->params_view .= "
         \$data['$aux_name'] = array(".join(", ", $aux).");";
                                             
-                    $typeHtml = "<?php echo \$this->Utility->createGroupChecks(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, array(\$".$className."->$attrName)) ?>";
+                    $typeHtml = "<?php echo \$this->Utility->createGroupChecks(array(\"name\"=>\"$attrName\", \"class\"=>\"input_checkbox $rules\"), \$$aux_name, array(\$".$className."->$attrName)) ?>";
                 break;
                 
                 case "radio":
@@ -198,26 +200,26 @@ class FD_Scafold
                     $this->params_view .= "
         \$data['$aux_name'] = array(".join(", ", $aux).");";    
                     
-                    $typeHtml = "<?php echo \$this->Utility->createGroupRadios(array(\"name\"=>\"$attrName\", \"class\"=>\"$rules\"), \$$aux_name, \$".$className."->$attrName) ?>";
+                    $typeHtml = "<?php echo \$this->Utility->createGroupRadios(array(\"name\"=>\"$attrName\", \"class\"=>\"input_radio $rules\"), \$$aux_name, \$".$className."->$attrName) ?>";
                 break;
                 
                 case "password":
                     $val_attr = "\$".$className."->$attrName";
                     $this->default_values[] = "'$attrName' => '". str_replace("'", "\'", $data_val["password"])."'";
-                    $typeHtml = "<input type='password' name='$attrName' class='$rules' value='<?php echo \$".$className."->$attrName ?>' />";
+                    $typeHtml = "<input type='password' name='$attrName' class='input_password $rules' value='<?php echo \$".$className."->$attrName ?>' />";
                 break;
                 
                 case "text":
                 default:
                     $val_attr = "\$".$className."->$attrName";
                     $this->default_values[] = "'$attrName' => '". str_replace("'", "\'", $data_val["text"])."'";
-                    $typeHtml = "<input type='text' name='$attrName' class='$rules' value='<?php echo \$".$className."->$attrName ?>' />";
+                    $typeHtml = "<input type='text' name='$attrName' class='input_text $rules' value='<?php echo \$".$className."->$attrName ?>' />";
                 break;
             }
             
         $inputs .= "
                     <li>
-                        <label>".$data_val["fieldtext"]."</label>
+                        <label class='label_form'>".$data_val["fieldtext"]."</label>
                         $typeHtml
                     </li>";
                     
@@ -229,7 +231,9 @@ class FD_Scafold
             }else
             {
                 $this->row_titles .= "
-                    <th class='<?php echo \$sort_order_by=='$attrName'?'sorted':'' ?>'> <a href='<?php echo ROOT_PATH ?>$this->url_module/lists/$attrName/<?php echo \$sort_dir=='ASC'?'DESC':'ASC' ?>/<?php echo \$current_pag?>'>".$data_val["fieldtext"]."</a></th>";
+                        <th class='sorter <?php echo \$sort_order_by=='$attrName'?'sorted':'' ?>'> 
+                            <a href='<?php echo ROOT_PATH ?>$this->url_module/lists/$attrName/<?php echo \$sort_dir=='ASC'?'DESC':'ASC' ?>/<?php echo \$current_pag?>'>".$data_val["fieldtext"]."</a>
+                        </th>";
                 $this->row_body .= "
                             <td><?php  echo $val_attr ?></td>";
             }
@@ -281,23 +285,27 @@ fwrite($fp,"
 fwrite($fp," 
         <div class='panel_listado'>  
             <h1>Lista de $className</h1>            
-            <table id='listado_$className'>
-                <tr>$row_titles<th>Actions</th>
-                </tr>
-                <?php  if(count(\$".$className."s)): ?>
-                    <?php  foreach(\$".$className."s as \$".$className."): ?>
-                        <tr>$row_body
-                            <td class='actions'>
-                                <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar'>Editar</a>
-                                <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
-                            </td>
-                        </tr>
-                    <?php  endforeach ?>
-                <?php  else: ?>
-                    <tr>
-                        <td colspan='99'>No existen $className registradas</td>
+            <table id='listado_$className' class='tablesorter'>
+                <thead>
+                    <tr>$row_titles<th>Actions</th>
                     </tr>
-                <?php  endif ?>
+                </thead>
+                <tbody>
+                    <?php  if(count(\$".$className."s)): ?>
+                        <?php  foreach(\$".$className."s as \$".$className."): ?>
+                            <tr>$row_body
+                                <td class='actions'>
+                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar' title='Edit element'>Editar</a>
+                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete element' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
+                                </td>
+                            </tr>
+                        <?php  endforeach ?>
+                    <?php  else: ?>
+                        <tr>
+                            <td colspan='99'>No existen $className registradas</td>
+                        </tr>
+                    <?php  endif ?>
+                </tbody>
             </table>
             <div class='panel_paginator'>
                 <?php echo \$this->Utility->create_paginator(\$total_items, \$per_page, \$current_pag, ROOT_PATH.\"".$this->url_module."/lists/\$sort_order_by/\$sort_dir\", 4); ?>
@@ -327,28 +335,29 @@ fwrite($fp,"
         $fp = fopen("../".$this->view_dir."/".$className.'/index.php',"a+");
 fwrite($fp," 
         <div class='panel_listado'>
-            <div class='messages'>
-                <?php \$this->Session->printFlashMessages(); ?>
-            </div>  
             <h1>Lista de $className</h1>            
             <table id='listado_$className'>
-                <tr>
-                    $row_titles<th>Actions</th>
-                </tr>
-                <?php  if(count(\$".$className."s)): ?>
-                    <?php  foreach(\$".$className."s as \$".$className."): ?>
-                        <tr>$row_body
-                            <td class='actions'>
-                                <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar'>Editar</a>
-                                <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
-                            </td>
-                        </tr>
-                    <?php  endforeach ?>
-                <?php  else: ?>
+                <thead>
                     <tr>
-                        <td colspan='99'>No existen $className registradas</td>
+                        $row_titles<th>Actions</th>
                     </tr>
-                <?php  endif ?>
+                </thead>
+                <tbody>
+                    <?php  if(count(\$".$className."s)): ?>
+                        <?php  foreach(\$".$className."s as \$".$className."): ?>
+                            <tr>$row_body
+                                <td class='actions'>
+                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar' title='Edit element'>Editar</a>
+                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete element' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
+                                </td>
+                            </tr>
+                        <?php  endforeach ?>
+                    <?php  else: ?>
+                        <tr>
+                            <td colspan='99'>No existen $className registradas</td>
+                        </tr>
+                    <?php  endif ?>
+                </tbody>
             </table>
             <div class='panel_controls'>
                 <a id='btn_registrar' href='<?php echo ROOT_PATH ?>".$this->url_module."/create'>Registrar nuevo</a>
@@ -390,7 +399,7 @@ class ".ucwords($className)."_Controller extends FD_Management
 	function __construct()
 	{
         parent::__construct();
-        \$this->useLayout(\"ui_scaffold\");
+        \$this->useLayout(\"fastdevelphp/backend\");
 	}
     
     function index()
@@ -491,7 +500,7 @@ class ".ucwords($className)."_Controller extends FD_Management
 	function __construct()
 	{
         parent::__construct();
-        \$this->useLayout(\"ui_scaffold\");
+        \$this->useLayout(\"fastdevelphp/backend\");
 	}
     
     function index()
