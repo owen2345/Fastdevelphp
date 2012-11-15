@@ -71,7 +71,8 @@
                 </tbody>
             </table>
             <br />
-            <a href="#" id="add_param" title="Add param">Add Param</a> 
+            <a href="#" id="add_param" title="Add param">Add Param</a>
+            <br /><br /><br /><br /> 
         </li>
         <li class="controls">
             <br />

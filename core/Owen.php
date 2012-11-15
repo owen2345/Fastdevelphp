@@ -9,104 +9,8 @@
  * @copyright 2009
  */
 
-/**
- * Muestra mensaje de error $msg
- */
-function dieFastDevel($msg)
-{
-    include("../logs/dieFastDevel.php");
-    exit;
-}
-
-/**
- * Guarda el mensaje $log en los logs
- * $skypeFileInfo: false - guarda la informacion del archivo, true - guarda la informacion de archivo
- */
-function fd_log($log, $skypeFileInfo = false)
-{
-    $debug = "";
-    if(!$skypeFileInfo)
-        $debug = FD_getDebug("\n");
-    //chmod("../logs/log.log", 0777);
-    $consolePHP = fopen("../logs/log.log", "a+");
-    fwrite($consolePHP, "\n\n".$log ."\n".$debug);
-    fclose($consolePHP);
-}
-/**
- * DEPRECATED
- */
-function FD_getDebug($breakLine = "<br>")
-{
-    $caller = debug_backtrace();
-    $e = "";
-	foreach(array_reverse($caller) as $c)
-	{
-	    if(isset($c["file"]))
-        {
-            $ttmp = explode('\\', $c["file"]);
-            $file = $ttmp[count($ttmp)-1];
-            if($file == "Owen.php" || $c["function"] == "getDebug" || $c["function"] == "FD_getDebug" || $c['function'] == 'include' || $c['function'] == 'dieFastDevel')
-                continue;
-            $e.="File: ".$file." --- Function: ".$c["function"]
-                ." --- Line: ".$c["line"].$breakLine;
-        }
-	}
-    return $e;
-}
-
-function loadFileFastDevel($source)
-{
-    include($source);
-}
-
-function __autoload($class_name)
-{	
-    $class_name1 = $class_name;
-	$class_name=ucwords($class_name);
-    /*******controllers********/
-    if(SUBFOLDER_CONTROLLER && file_exists("../controllers/".SUBFOLDER_CONTROLLER."/".$class_name . '.php'))
-		require_once "../controllers/".SUBFOLDER_CONTROLLER."/".$class_name . '.php';
-    elseif(SUBFOLDER_CONTROLLER && file_exists("../controllers/".SUBFOLDER_CONTROLLER."/".$class_name1 . '.php'))
-		require_once "../controllers/".SUBFOLDER_CONTROLLER."/".$class_name1 . '.php';
-	elseif(file_exists("../controllers/".$class_name . '.php'))
-		require_once "../controllers/".$class_name . '.php';
-    elseif(file_exists("../controllers/".$class_name1 . '.php'))
-		require_once "../controllers/".$class_name1 . '.php';            
-	/*******configs********/
-	elseif(file_exists("../core/".$class_name . '.php'))
-		require_once "../core/".$class_name . '.php';
-    elseif(file_exists("../core/".$class_name1 . '.php'))
-		require_once "../core/".$class_name1 . '.php';        
-	/*******modelos********/
-	elseif(file_exists("../models/".$class_name . '.php'))
-		require_once "../models/".$class_name . '.php';
-    elseif(file_exists("../models/".$class_name1 . '.php'))
-		require_once "../models/".$class_name1 . '.php';        	
-    /*******vendors********/
-	elseif(file_exists("../vendors/".$class_name . '.php'))
-		require_once "../vendors/".$class_name . '.php';	
-    elseif(file_exists("../vendors/".$class_name1 . '.php'))
-		require_once "../vendors/".$class_name1 . '.php';        
-	else	
-    {
-        header("HTTP/1.0 404 Not Found");
-        dieFastDevel("Not exist the controller \"$class_name\" o no existe la url: ".$_SERVER["REDIRECT_URL"]."");
-    }
-}
-
 include("../confi/FD_Config.php");
 
-/** unstrip $_post slashes**/
-function unstrip_array($array){
-	foreach($array as &$val){
-		if(is_array($val)){
-			$val = unstrip_array($val);
-		}else{
-			$val = stripslashes($val);
-		}
-	}
-    return $array;
-}
 $_POST = unstrip_array($_POST);
 /** end **/
 
@@ -136,7 +40,7 @@ $url_post = explode("/", $url_post);
 $posControllerName = 0;
 $posControllerFunction = 1;
 $subfolderController = "";
-if(isset($url_post[0]) && $url_post[0] && is_dir("../controllers/".$url_post[0]))//when the controller is within sub directory
+if(isset($url_post[0]) && $url_post[0] && is_dir(FB_checkPath("../controllers/".$url_post[0])))//when the controller is within sub directory
 {
     $posControllerName ++;
     $posControllerFunction ++;
@@ -189,6 +93,10 @@ if($class->hasMethod($controllerFunction))
 else
     dieFastDevel("Not exist the function: \"$controllerFunction\" for \"$controllerName\"");
 
+
+
+
+
 /**
  * Obtiene la instancia del controlador en cualquier lugar del proyecto
  * Return: FD_Management Object
@@ -198,6 +106,144 @@ function getInstance()
     $aux = CONTROLLER_NAME.'_Controller';
     $C = FD_Management::getInstance();
     return $C;
+}
+
+
+function FB_checkPath($path = null)
+{
+    if(!$path)
+        return $path;
+        
+    $custom = false;
+    $res = "";
+    $parts = explode("/", $path);
+    if(count($parts) <= 1)
+    {
+        $custom = true;
+        $parts = explode("/", "./".$path);
+    }
+        
+        
+    for($i=0; $i < count($parts); $i++)
+    {
+        $part = $parts[$i];
+        if(is_dir($res.$part))
+            $res = $res.$part."/";
+        else
+        {
+            $res = $res = $res.$part;
+            break;
+        }
+        if(!isset($parts[$i+1]))
+            continue;
+        $band = false;
+        foreach(scandir($res) as $dir_file_name)
+        {
+            if(strtolower($parts[$i+1]) == strtolower($dir_file_name))
+            {
+                $parts[$i+1] = $dir_file_name;
+                $band = true;
+            }
+        }
+        
+        if(!$band)
+            return false;
+    }
+    
+    if($custom)
+        $res = str_replace("./", "", $res);
+    return $res;
+}
+
+/**
+ * Muestra mensaje de error $msg
+ */
+function dieFastDevel($msg)
+{
+    include("../logs/dieFastDevel.php");
+    exit;
+}
+
+/**
+ * Guarda el mensaje $log en los logs
+ * $skypeFileInfo: false - guarda la informacion del archivo, true - guarda la informacion de archivo
+ */
+function fd_log($log, $skypeFileInfo = false)
+{
+    $debug = "";
+    if(!$skypeFileInfo)
+        $debug = FD_getDebug("\n");
+    //chmod("../logs/log.log", 0777);
+    $consolePHP = fopen("../logs/log.log", "a+");
+    fwrite($consolePHP, "\n\n".$log ."\n".$debug);
+    fclose($consolePHP);
+}
+/**
+ * DEPRECATED
+ */
+function FD_getDebug($breakLine = "<br>")
+{
+    $caller = debug_backtrace();
+    $e = "";
+	foreach(array_reverse($caller) as $c)
+	{
+	    if(isset($c["file"]))
+        {
+            $ttmp = explode('\\', $c["file"]);
+            $file = $ttmp[count($ttmp)-1];
+            if($file == "Owen.php" || $c["function"] == "getDebug" || $c["function"] == "FD_getDebug" || $c['function'] == 'include' || $c['function'] == 'dieFastDevel')
+                continue;
+            $e.="File: ".$file." --- Function: ".$c["function"]
+                ." --- Line: ".$c["line"].$breakLine;
+        }
+	}
+    return $e;
+}
+
+function loadFileFastDevel($source)
+{
+    $a = FB_checkPath($source);
+    if($a)
+        include($a);
+    else
+        dieFastDevel("Not found source: $source");
+}
+
+function __autoload($class_name)
+{	
+    $class_name1 = $class_name;
+	$class_name=ucwords($class_name);
+    /*******controllers********/
+    if(SUBFOLDER_CONTROLLER && FB_checkPath("../controllers/".SUBFOLDER_CONTROLLER."/".$class_name . '.php'))
+		require_once FB_checkPath("../controllers/".SUBFOLDER_CONTROLLER."/".$class_name . '.php');
+	elseif(FB_checkPath("../controllers/".$class_name . '.php'))
+		require_once FB_checkPath("../controllers/".$class_name . '.php');
+	/*******configs********/
+	elseif(FB_checkPath("../core/".$class_name . '.php'))
+		require_once FB_checkPath("../core/".$class_name . '.php');
+	/*******modelos********/
+	elseif(FB_checkPath("../models/".$class_name . '.php'))
+		require_once FB_checkPath("../models/".$class_name . '.php');
+    /*******vendors********/
+	elseif(FB_checkPath("../vendors/".$class_name . '.php'))
+		require_once FB_checkPath("../vendors/".$class_name . '.php');
+	else	
+    {
+        header("HTTP/1.0 404 Not Found");
+        dieFastDevel("Not exist the controller \"$class_name\" o no existe la url: ".$_SERVER["REDIRECT_URL"]."");
+    }
+}
+
+/** unstrip $_post slashes**/
+function unstrip_array($array){
+	foreach($array as &$val){
+		if(is_array($val)){
+			$val = unstrip_array($val);
+		}else{
+			$val = stripslashes($val);
+		}
+	}
+    return $array;
 }
 
 ?>

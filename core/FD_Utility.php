@@ -764,28 +764,51 @@ class FD_Utility
      * $path: url de archivo o directorio
      * return: (String) path corregido si existe el $path, sino retorna False
      */
-    function checkPath($path)
+    function checkPath($path = null)
     {
-        $dirs = explode("/", $path);
-        $previous = $dirs[0];
-        $dirs = array_slice($dirs, 1, count($dirs)-1);
-        foreach($dirs as $dir)
+    if(!$path)
+        return $path;
+        
+    $custom = false;
+    $res = "";
+    $parts = explode("/", $path);
+    if(count($parts) <= 1)
+    {
+        $custom = true;
+        $parts = explode("/", "./".$path);
+    }
+        
+        
+    for($i=0; $i < count($parts); $i++)
+    {
+        $part = $parts[$i];
+        if(is_dir($res.$part))
+            $res = $res.$part."/";
+        else
         {
-            if(file_exists($previous."/".$dir))
-                $previous = $previous."/".$dir;
-            elseif(file_exists($previous."/".ucwords($dir)))
-                $previous = $previous."/".ucwords($dir);
-            elseif(file_exists($previous."/".strtolower($dir)))
-                $previous = $previous."/".strtolower($dir);
-            elseif(file_exists($previous."/".strtoupper($dir)))
-                $previous = $previous."/".strtoupper($dir);
-            else
+            $res = $res = $res.$part;
+            break;
+        }
+        if(!isset($parts[$i+1]))
+            continue;
+        $band = false;
+        foreach(scandir($res) as $dir_file_name)
+        {
+            if(strtolower($parts[$i+1]) == strtolower($dir_file_name))
             {
-                return false;
+                $parts[$i+1] = $dir_file_name;
+                $band = true;
             }
         }
-        return $previous;
+        
+        if(!$band)
+            return false;
     }
+    
+    if($custom)
+        $res = str_replace("./", "", $res);
+    return $res;
+}
 }
 
 ?>
