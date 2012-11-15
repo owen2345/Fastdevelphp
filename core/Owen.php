@@ -110,6 +110,8 @@ function unstrip_array($array){
 $_POST = unstrip_array($_POST);
 /** end **/
 
+define("URL_CALLED", strtolower($_GET["url_fastdevel"]));
+
 /** routes*/
 if(key_exists($_GET["url_fastdevel"], $FD_Routes))
     $_GET["url_fastdevel"] = $FD_Routes[$_GET["url_fastdevel"]];

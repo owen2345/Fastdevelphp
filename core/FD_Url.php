@@ -132,5 +132,14 @@ class FD_Url
     {
         return $_FILES;
     }
+    
+    /**
+     * retorna la url enviada desde el browser
+     * ideal para buscar o comparar textos en la url
+     */
+    function getRequestUrl()
+    {
+        return strtolower(URL_CALLED);
+    }
 }
 ?>

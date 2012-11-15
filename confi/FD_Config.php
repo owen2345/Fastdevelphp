@@ -1,10 +1,10 @@
 <?php
-
+ 
 session_start();
-
+ 
 $protocol = isset($_SERVER['HTTPS'])?'https':'http';
 define("ROOT_PATH","$protocol://".$_SERVER["HTTP_HOST"]."/path_to_project/");
- 
+  
 /**
  * Database
  */
@@ -14,7 +14,7 @@ define("USER_DB","user db");
 define("PSSWD_DB","password db");
 define("NAME_DB","database name");
 define("PREFIX_TABLE_IGNORE","wp_"); // wp_    esto ignora las tablas: wp_config, wp_posts, wp_.., ...
- 
+  
 /**
  * Path's
  */
@@ -24,31 +24,31 @@ define("IMAGES_PATH",ROOT_PATH."images/");
 define("VIEWS_PATH","../views/");
 define("LAYOUTS_PATH","../layouts/");
 define("MODELS_PATH","../models/");
- 
+  
 /**
  * Configurations
  */
 define("DEFAULT_CONTROLLER","home");
 define("ENABLE_CONSOLE","true");
 define("SITE_NAME","nombre del sitio");
- 
+  
 //header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
 //header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
 //header("Cache-Control: no-cache, must-revalidate" ); 
 //header("Pragma: no-cache" );
 header("Content-type: text/html; charset=utf-8");
- 
- 
+  
+  
 /**
  * Used for mask the url's, Key as mask name, Value as real path
  * Static sample: "contacto.html" => "home/contacto"
- * Dinamic sample: "producto/[0-9]" => "producto/show/$0" (support reg expresions)
+ * Dinamic sample: "producto/[0-9]" => "producto/show/$1" (support reg expresions)
 */
 $FD_Routes = array(
     "profile" => "company_user/profile"
 );
- 
- 
+  
+  
 /**
  * key = shortcode name.
  * val = Controller Name and function name.
