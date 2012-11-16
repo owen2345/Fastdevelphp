@@ -41,9 +41,17 @@ class FD_Scafold
             $this->controller_dir .= '/'.$module_name;
             $this->view_dir .= '/'.$module_name;
             if(!file_exists("../".$this->controller_dir))
-                mkdir("../".$this->controller_dir, 0777); 
+            {
+                mkdir("../".$this->controller_dir, 0777);
+                echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->controller_dir/\" was created!</a></div>";
+            }
+                 
             if(!file_exists("../".$this->view_dir))
+            {
                 mkdir("../".$this->view_dir, 0777); 
+                echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->view_dir/\" was created!</a></div>";
+            }
+                
             $this->url_module = "$module_name/".$this->url_module;              
         }
                 
@@ -56,7 +64,7 @@ class FD_Scafold
             $this->FD_createController_scaffold($className);
         
         /**********/
-        echo "<a href='".ROOT_PATH.$this->url_module."'>Ir a listado</a>";
+        echo "<div class=\"albox succesbox\"><b>Succes :</b>Finished: <a href='".ROOT_PATH.$this->url_module."'>Preview</a></div>";
     }
     
     private function getVarName($name)
@@ -78,7 +86,11 @@ class FD_Scafold
     function FD_createViews_scaffold($className, $simple = true)
     {
         if(!file_exists("../".$this->view_dir."/$className"))
+        {
             mkdir("../".$this->view_dir."/$className", 0777);
+            echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->view_dir/$className/\" was created!</a></div>";
+        }
+            
         $this->FD_createFormView($className);
         
         if($simple)
@@ -94,7 +106,7 @@ class FD_Scafold
         $primaryKey = $Object->getPrimaryKey();
         if(file_exists("../".$this->view_dir."/".$className.'/form.php'))        
         {
-            echo "<br> \"".$this->view_dir."/$className/form.php\" view already exist.<br>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/form.php\" view already exist</b> </div>";
             return;
         }
         
@@ -164,7 +176,7 @@ class FD_Scafold
         if(\$res_file)
         {
             if(!\$res_file[\"error\"])
-                \$_POST['$attrName'] =  \$res_file['file'];
+                \$this->Request->setParam_POST(\"$attrName\", \$res_file['file']);
             else
                 \$this->Session->addFlashMessage(\"action\", \$res_file['msg'], 2);
         }";
@@ -263,8 +275,7 @@ fwrite($fp,"
             </form>
         </div>");
         fclose($fp);
-        
-        echo "<br> Vista \"".$this->view_dir.'/'.$className."/form.php\" creada! <br>";
+        echo "<div class=\"albox succesbox\"><b>Succes :</b> View \"".$this->view_dir.'/'.$className."/form.php\" was created!</div>";
     }
     
     function FD_createListView($className)
@@ -272,7 +283,7 @@ fwrite($fp,"
         $FD = getInstance();
         if(file_exists("../".$this->view_dir."/".$className.'/index.php'))        
         {
-            echo "<br> \"".$this->view_dir."/$className/index.php\" view already exist.<br>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/index.php\" view already exist.</b> </div>";
             return;
         }
                 
@@ -316,7 +327,7 @@ fwrite($fp,"
         </div>
             ");
         fclose($fp);
-        echo "<br> Vista \"".$this->view_dir."/".$className."/index.php\" creada! <br>";
+        echo "<div class=\"albox succesbox\"><b>Succes :</b> View \"".$this->view_dir."/".$className."/index.php\" was created!</div>";
     }
     
     function FD_createListView_simple($className)
@@ -324,7 +335,7 @@ fwrite($fp,"
         $FD = getInstance();
         if(file_exists("../".$this->view_dir."/".$className.'/index.php'))        
         {
-            echo "<br> \"".$this->view_dir."/$className/index.php\" view already exist.<br>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/index.php\" view already exist.</b> </div>";
             return;
         }
         
@@ -365,7 +376,7 @@ fwrite($fp,"
         </div>
             ");
         fclose($fp);
-        echo "<br> Vista \"".$this->view_dir."/".$className."/index.php\" creada! <br>";
+        echo "<div class=\"albox succesbox\"><b>Succes :</b> View \"".$this->view_dir."/".$className."/index.php\" was created!</div>";
     }
     
     function FD_createController_scaffold($className)
@@ -376,7 +387,7 @@ fwrite($fp,"
             
         if(file_exists("../".$this->controller_dir."/".ucwords($className).'_Controller.php'))        
         {
-            echo "<br> \"".$this->controller_dir."/$className\" controller already exist.<br>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir."/".$className."_Controller.php\" controller already exist.</b> </div>";
             return;
         }
         
@@ -433,7 +444,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     function save()
     {
         $this->files
-        \$this->DB->create_object(\"$className\", \$_POST)->save();
+        \$this->DB->create_object(\"$className\", \$this->Request->getParams_POST())->save();
         \$this->Session->addFlashMessage(\"action\", \"El item fue guardado!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
@@ -450,7 +461,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     function update(\$id)
     {
         $this->files
-        \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$_POST)->update();
+        \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$this->Request->getParams_POST())->update();
         \$this->Session->addFlashMessage(\"action\", \"El item fue actualizado!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
@@ -466,7 +477,8 @@ class ".ucwords($className)."_Controller extends FD_Management
 }
 ?>");
     fclose($fp);
-    echo "<br> Controller \"".$this->controller_dir."/".ucwords($className)."_Controller.php\" creado! <br>";
+    echo "<div class=\"albox succesbox\"><b>Succes :</b> Controller \"".$this->controller_dir."/".ucwords($className)."_Controller.php\" was created!</div>";
+    
     }
     
     function FD_createController_scaffold_simple($className)
@@ -477,7 +489,7 @@ class ".ucwords($className)."_Controller extends FD_Management
             
         if(file_exists("../".$this->controller_dir."/".ucwords($className).'_Controller.php'))        
         {
-            echo "<br> \"".$this->controller_dir."/$className\" controller already exist.<br>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir."/".$className."_Controller.php\" controller already exist.</b> </div>";
             return;
         }
 
@@ -527,7 +539,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     function save()
     {
         $this->files
-        \$this->DB->create_object(\"$className\", \$_POST)->save();
+        \$this->DB->create_object(\"$className\", \$this->Request->getParams_POST())->save();
         \$this->Session->addFlashMessage(\"action\", \"El item fue guardado!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
@@ -544,7 +556,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     function update(\$id)
     {
         $this->files
-        \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$_POST)->update();
+        \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$this->Request->getParams_POST())->update();
         \$this->Session->addFlashMessage(\"action\", \"El item fue actualizado!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
@@ -560,7 +572,8 @@ class ".ucwords($className)."_Controller extends FD_Management
 }
 ?>");
     fclose($fp);
-    echo "<br> Controller \"".$this->controller_dir."/".ucwords($className)."_Controller.php\" creado! <br>";
+    
+    echo "<div class=\"albox succesbox\"><b>Succes :</b> Controller \"".$this->controller_dir."/".ucwords($className)."_Controller.php\" was created!</div>";
     }
     
 }

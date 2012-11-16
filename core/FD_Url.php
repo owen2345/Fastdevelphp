@@ -100,6 +100,22 @@ class FD_Url
         else
             return false;
     }
+        
+    /**
+     * Estable un valor $value para el key $paramName en $_POST
+     */
+    function setParam_POST($paramName, $value)
+    {
+        $_POST["$paramName"] = $value;
+    }
+    
+    /**
+     * Estable un valor $value para el key $paramName en $_GET
+     */
+    function setParam_GET($paramName, $value)
+    {
+        $_GET["$paramName"] = $value;
+    }
     
     /**
      * Verifica si el parametro fue enviado por metodo $_POST

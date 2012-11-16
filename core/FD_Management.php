@@ -17,7 +17,7 @@ class FD_Management extends FD_Common
     var $Session;
     var $DB;
     var $SQL;
-    var $Url;
+    var $Request;
     private $config_tmp = array();
     static $_instance;
 	function FD_Management()
@@ -30,7 +30,7 @@ class FD_Management extends FD_Common
         $this->Utility = new FD_Utility();
         $this->Session = new FD_Session($this->Connection); 
         $this->Session->updateFlashMessage();
-        $this->Url = new FD_Url();
+        $this->Request = new FD_Url();
 	}
 	
     /**

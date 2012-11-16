@@ -44,7 +44,7 @@
         <div id="header">    
         
         	<!-- logo -->
-        	<div class="logo">	<a href="index.html"><img src="<?php echo IMAGES_PATH ?>logo.png" width="112" height="35" alt="logo"/></a>	</div>
+        	<div class="logo">	<a href="<?php echo ROOT_PATH ?>"><img src="<?php echo IMAGES_PATH ?>logo.png" width="112" height="35" alt="logo"/></a>	</div>
             
             
             <!-- profile box -->
@@ -96,6 +96,10 @@
             
             <!-- START PAGE -->
             <div id="page">
+                <div class="albox informationbox">
+                	<b>Information :</b> Please set your menu items in backend layout. 
+                	<a href="#" class="close tips" title="close">close</a>
+                </div>
                 <?php $this->loadPartialView("fastdevelphp/session_messages") ?>
                 <?php echo $contentView ?>
             </div>
@@ -107,7 +111,7 @@
             
             <!-- START FOOTER -->
             <div id="footer">
-            	<div class="left-column">&copy; Copyright 2012 - All rights reserved.</div>
+            	<div class="left-column">Powered by <a href="http://skylogix.net">Skylogix</a> &copy; Copyright 2012 - All rights reserved.</div>
                 <div class="right-column">Backend template <a href="http://www.fastdevelphp.sysdecom.com" target="_blank">Fastdevelphp</a></div>
             </div>
             <!-- END FOOTER -->

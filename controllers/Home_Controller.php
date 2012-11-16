@@ -21,6 +21,12 @@ class Home_Controller extends FD_Management
         $datas = array();
         $this->loadView("home", $datas);
     }
+    
+    function login()
+    {
+        //show login template
+        $this->loadView("home", array(), "fastdevelphp/login");
+    }
 }
 	
 ?>

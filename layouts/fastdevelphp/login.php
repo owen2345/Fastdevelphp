@@ -14,18 +14,24 @@
     <!--[if IE 7]>	<link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH ?>fastdevelphp/ie7-style.css" />	<![endif]-->
     
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/toogle.js"></script>
 </head>
 <body>
     <div class="loginform">
-    	<div class="title"> <img src="<?php echo IMAGES_PATH ?>fastdevelphp/logo.png" width="112" height="35" /></div>
+    	<div class="title"> <a href="<?php echo ROOT_PATH ?>" title="go to home"><img src="<?php echo IMAGES_PATH ?>logo.png" width="112" height="35" /></a></div>
         <div class="body">
-       	  <form id="form1" name="form1" method="post" action="index.html">
-          	<label class="log-lab">Username</label>
-            <input name="textfield" type="text" class="login-input-user" id="textfield" value="Admin"/>
-          	<label class="log-lab">Password</label>
-            <input name="textfield" type="password" class="login-input-pass" id="textfield" value="Password"/>
-            <input type="submit" name="button" id="button" value="Login" class="button"/>
-       	  </form>
+            <div class="albox informationbox">
+            	<b>Information :</b> Please adapt to your needs. 
+            	<a href="#" class="close tips" title="close">close</a>
+            </div>
+            <?php $this->loadPartialView("fastdevelphp/session_messages") ?>
+            <form id="form1" name="form1" method="post" action="<?php echo ROOT_PATH ?>">
+                <label class="log-lab">Username</label>
+                <input name="textfield" type="text" class="login-input-user" value="Admin"/>
+                <label class="log-lab">Password</label>
+                <input name="textfield" type="password" class="login-input-pass" value="Password"/>
+                <input type="submit" name="button" value="Login" class="button"/>
+            </form>
         </div>
     </div>
     

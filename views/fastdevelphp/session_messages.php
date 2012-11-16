@@ -1,7 +1,3 @@
-<div class="albox informationbox">
-	<b>Information :</b> Please set your menu items in backend layout. 
-	<a href="#" class="close tips" title="close">close</a>
-</div>
 <?php foreach($this->Session->getFlashMessages() as $FMessage): ?>
     <?php if($FMessage["type"] == 0): ?>
         <div class="albox succesbox">

@@ -1,3 +1,17 @@
+<?php if(!is_writable("../views/")): $band = false; ?>
+    <div class="albox errorbox">
+    	<b>Error :</b> Folder views/ debe tener permisos de escritura
+    </div>
+<?php endif ?>
+
+<?php if(!is_writable("../controllers/")): $band = false; ?>
+    <div class="albox errorbox">
+    	<b>Error :</b> Folder controllers/ debe tener permisos de escritura
+    </div>
+<?php endif ?>
+
+
+
 <div class="simplebox" style="z-index: 720;">
 <div class="titleh" style="z-index: 710;">
 	<h3>Bienvenido al modulo de scaffold de Fastdevelphp.</h3>

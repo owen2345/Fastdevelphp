@@ -15,6 +15,7 @@
     <script> var ROOT_PATH = "<?php echo ROOT_PATH ?>"; </script>
 	<script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/jquery.min.js"></script>
     <script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/validate.js"></script>
+    <script type="text/javascript" src="<?php echo JS_PATH ?>fastdevelphp/toogle.js"></script>
 </head>
 <body class="scaffold">
 
@@ -24,7 +25,7 @@
         <div id="header">    
         
         	<!-- logo -->
-        	<div class="logo">	<a href="index.html"><img src="<?php echo IMAGES_PATH ?>logo.png" width="112" height="35" alt="logo"/></a>	</div>
+        	<div class="logo">	<a href="<?php echo ROOT_PATH ?>"><img src="<?php echo IMAGES_PATH ?>logo.png" width="112" height="35" alt="logo"/></a>	</div>
             
             <div class="clear"></div>
         </div>
@@ -45,8 +46,8 @@
             
             <!-- START FOOTER -->
             <div id="footer">
-            	<div class="left-column">&copy; Copyright 2012 - All rights reserved.</div>
-                <div class="right-column">Backend template <a href="http://www.fastdevelphp.sysdecom.com" target="_blank">Fastdevelphp</a></div>
+            	<div class="left-column">Powered by <a href="http://skylogix.net">Skylogix</a> &copy; Copyright 2012 - All rights reserved.</div>
+                <div class="right-column">Scaffold template <a href="http://www.fastdevelphp.sysdecom.com" target="_blank">Fastdevelphp</a></div>
             </div>
             <!-- END FOOTER -->
     </div>
