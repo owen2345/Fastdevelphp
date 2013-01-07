@@ -170,6 +170,9 @@ function dieFastDevel($msg)
  */
 function fd_log($log, $skypeFileInfo = false)
 {
+    if(!ENABLE_LOG)
+        return;
+        
     $debug = "";
     if(!$skypeFileInfo)
         $debug = FD_getDebug("\n");

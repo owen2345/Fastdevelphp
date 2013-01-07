@@ -117,7 +117,7 @@ class FD_Scafold
             $attrName = $data_val["fieldname"];
             $rules = "";
             if(isset($data_val["rule"]))
-                $rules = implode(", ", $data_val["rule"]);
+                $rules = implode(" ", $data_val["rule"]);
             //echo $rules."<br>";
             switch(strtolower($data_val["fieldtype"]))
             {
@@ -163,23 +163,19 @@ class FD_Scafold
                 break;
                 
                 case "file":
-                    $val_attr = "$".$className."->$attrName?\"<img width='50' alt='' src='\".ROOT_PATH.\"uploads/\".\$".$className."->$attrName.\"'>\":'No definido';";
+                    $val_attr = "\$this->Utility->getFileLink(\"../uploads/\".$".$className."->$attrName, ROOT_PATH.\"uploads/\".$".$className."->$attrName)";
                     $encitype = "multipart/form-data";
                     
-                    $typeHtml = "<input type='file' name='file_$attrName' class='input_file $rules' />
-                                <?php if(\$".$className."->$attrName): ?>
-                                    <img width='50' alt='' src='<?php echo ROOT_PATH.\"uploads/\".\$".$className."->$attrName ?>'>
-                                <?php endif ?>";
+                    $typeHtml = "<input type='file' name='file_$attrName' class='input_file $rules' />";
                                 
                     $this->files .= "
-        \$res_file = \$this->Utility->uploadFile('file_$attrName', '../uploads/', array('gif', 'jpg', 'jpeg', 'png'), 500000);
-        if(\$res_file)
-        {
-            if(!\$res_file[\"error\"])
-                \$this->Request->setParam_POST(\"$attrName\", \$res_file['file']);
-            else
-                \$this->Session->addFlashMessage(\"action\", \$res_file['msg'], 2);
-        }";
+        
+        \$res_file = \$this->Utility->uploadFile('file_$attrName', '../uploads/'); //uploading file
+        if(!\$res_file[\"error\"]) //on file uploaded
+            \$this->Request->setParam_POST(\"$attrName\", \$res_file['file']);
+        else //fail on file upload 
+            \$this->Session->addFlashMessage(\"file_$attrName\", \$res_file['msg'], 2);
+        ";
                                     
                 break;
                 
@@ -237,7 +233,8 @@ class FD_Scafold
                     
             if($this->simple)
             {
-                $this->row_titles .= "<th>".$data_val["fieldtext"]."</th>\n                    ";
+                $this->row_titles .= "
+                        <th>".$data_val["fieldtext"]."</th>";
                 $this->row_body .= "
                             <td><?php  echo $val_attr ?></td>";
             }else
@@ -256,23 +253,27 @@ class FD_Scafold
         
         $fp = fopen("../".$this->view_dir."/".$className.'/form.php',"a+");
 fwrite($fp,"
-        <div class='form_register' id='form_$className'>
+        <div class='form_register simplebox' id='form_$className'>
             <script>
                 jQuery(function($)
                 {
                     $(\"#form_$className form\").validate();
                 });
             </script>
-            <h2>Formulario $className</h2>
-            <form method='post' action='<?php echo ROOT_PATH ?>".$this->url_module."/<?php echo \$action ?>' enctype='$encitype'>
-                <input type='hidden' name='$primaryKey' value='<?php  echo \$".$className."->$primaryKey ?>' />
-                <ul>$inputs
-                    <li class='controls'>
-                        <button type='submit'><?php echo \$submitText ?></button>
-                        <button type='button' onclick='history.back();'>Cancelar</button>
-                    </li>            
-                </ul>
-            </form>
+            
+       	    <div class=\"titleh\"><h3>Formulario $className</h3></div>
+                            
+            <div class=\"body\">
+                <form method='post' action='<?php echo ROOT_PATH ?>".$this->url_module."/<?php echo \$action ?>' enctype='$encitype'>
+                    <input type='hidden' name='$primaryKey' value='<?php  echo \$".$className."->$primaryKey ?>' />
+                    <ul>$inputs
+                        <li class='controls'>
+                            <button type='submit'><?php echo \$submitText ?></button>
+                            <button type='button' onclick='history.back();'>Cancelar</button>
+                        </li>            
+                    </ul>
+                </form>
+            </div>
         </div>");
         fclose($fp);
         echo "<div class=\"albox succesbox\"><b>Succes :</b> View \"".$this->view_dir.'/'.$className."/form.php\" was created!</div>";
@@ -294,35 +295,37 @@ fwrite($fp,"
                 
         $fp = fopen("../".$this->view_dir."/".$className.'/index.php',"a+");
 fwrite($fp," 
-        <div class='panel_listado'>  
-            <h1>Lista de $className</h1>            
-            <table id='listado_$className' class='tablesorter'>
-                <thead>
-                    <tr>$row_titles<th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php  if(count(\$".$className."s)): ?>
-                        <?php  foreach(\$".$className."s as \$".$className."): ?>
-                            <tr>$row_body
-                                <td class='actions'>
-                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar' title='Edit element'>Editar</a>
-                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete element' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
-                                </td>
-                            </tr>
-                        <?php  endforeach ?>
-                    <?php  else: ?>
-                        <tr>
-                            <td colspan='99'>No existen $className registradas</td>
+        <div class='panel_listado simplebox'>
+            <div class=\"titleh\"><h3>List $className</h3></div>
+            <div class=\"body\">
+                <table id='listado_$className' class='tablesorter'>
+                    <thead>
+                        <tr>$row_titles<th>Actions</th>
                         </tr>
-                    <?php  endif ?>
-                </tbody>
-            </table>
-            <div class='panel_paginator'>
-                <?php echo \$this->Utility->create_paginator(\$total_items, \$per_page, \$current_pag, ROOT_PATH.\"".$this->url_module."/lists/\$sort_order_by/\$sort_dir\", 4); ?>
-            </div>
-            <div class='panel_controls'>
-                <a id='btn_registrar' href='<?php echo ROOT_PATH ?>".$this->url_module."/create'>Registrar nuevo</a>
+                    </thead>
+                    <tbody>
+                        <?php  if(count(\$".$className."s)): ?>
+                            <?php  foreach(\$".$className."s as \$".$className."): ?>
+                                <tr>$row_body
+                                    <td class='actions'>
+                                        <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar hg-yellow' title='Edit item'>Edit</a>
+                                        <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete item' onclick=\"var d = confirm('Are you sure delete this item?'); return d;\" class='eliminar hg-red'>Delete</a>
+                                    </td>
+                                </tr>
+                            <?php  endforeach ?>
+                        <?php  else: ?>
+                            <tr>
+                                <td colspan='99'>Not found $className items.</td>
+                            </tr>
+                        <?php  endif ?>
+                    </tbody>
+                </table>
+                <div class='panel_paginator'>
+                    <?php echo \$this->Utility->create_paginator(\$total_items, \$per_page, \$current_pag, ROOT_PATH.\"".$this->url_module."/lists/\$sort_order_by/\$sort_dir\", 4); ?>
+                </div>
+                <div class='panel_controls padding20'>
+                    <a id='btn_registrar' class='button-green' href='<?php echo ROOT_PATH ?>".$this->url_module."/create'>Create new</a>
+                </div>
             </div>
         </div>
             ");
@@ -345,33 +348,35 @@ fwrite($fp,"
         
         $fp = fopen("../".$this->view_dir."/".$className.'/index.php',"a+");
 fwrite($fp," 
-        <div class='panel_listado'>
-            <h1>Lista de $className</h1>            
-            <table id='listado_$className'>
-                <thead>
-                    <tr>
-                        $row_titles<th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php  if(count(\$".$className."s)): ?>
-                        <?php  foreach(\$".$className."s as \$".$className."): ?>
-                            <tr>$row_body
-                                <td class='actions'>
-                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar' title='Edit element'>Editar</a>
-                                    <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete element' onclick=\"var d = confirm('Esta seguro de eliminar este Item?'); return d;\" class='eliminar'>Eliminar</a>
-                                </td>
-                            </tr>
-                        <?php  endforeach ?>
-                    <?php  else: ?>
+        <div class='panel_listado simplebox'>
+            <div class=\"titleh\"><h3>List $className</h3></div>
+            <div class=\"body\">            
+                <table id='listado_$className'>
+                    <thead>
                         <tr>
-                            <td colspan='99'>No existen $className registradas</td>
+                            $row_titles<th>Actions</th>
                         </tr>
-                    <?php  endif ?>
-                </tbody>
-            </table>
-            <div class='panel_controls'>
-                <a id='btn_registrar' href='<?php echo ROOT_PATH ?>".$this->url_module."/create'>Registrar nuevo</a>
+                    </thead>
+                    <tbody>
+                        <?php  if(count(\$".$className."s)): ?>
+                            <?php  foreach(\$".$className."s as \$".$className."): ?>
+                                <tr>$row_body
+                                    <td class='actions'>
+                                        <a href='<?php echo ROOT_PATH ?>".$this->url_module."/edit/<?php echo \$".$className."->$primaryKey ?>' class='editar hg-yellow' title='Edit item'>Edit</a>
+                                        <a href='<?php echo ROOT_PATH ?>".$this->url_module."/delete/<?php echo \$".$className."->$primaryKey ?>' title='Delete item' onclick=\"var d = confirm('Are you sure delete this Item?'); return d;\" class='eliminar hg-red'>Delete</a>
+                                    </td>
+                                </tr>
+                            <?php  endforeach ?>
+                        <?php  else: ?>
+                            <tr>
+                                <td colspan='99'>Not found $className items</td>
+                            </tr>
+                        <?php  endif ?>
+                    </tbody>
+                </table>
+                <div class='panel_controls padding20'>
+                    <a id='btn_registrar' class='button-green' href='<?php echo ROOT_PATH ?>".$this->url_module."/create'>Create new</a>
+                </div>
             </div>
         </div>
             ");
@@ -413,11 +418,20 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->useLayout(\"fastdevelphp/backend\");
 	}
     
+    /**
+    * default controller function
+    **/
     function index()
     {
         \$this->lists();
     }
     
+    /**
+    * show list items with pagination and sortable
+    * \$order_by: attribute name for order the list, default by '$primaryKey'
+    * \$dir_order: direction order (ASC = ascendant, DESC = descendant), default ASC
+    * \$page: current page to show, default 1
+    **/
     function lists(\$order_by='$primaryKey', \$dir_order='ASC', \$page=1)
     {
         $this->params_view
@@ -432,6 +446,9 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/index\", \$data);
     }
     
+    /**
+    * show create form view
+    **/
     function create()
     {
         $this->params_view
@@ -441,6 +458,9 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
+    /**
+    * save information into database and then redirect to list items.
+    **/
     function save()
     {
         $this->files
@@ -449,6 +469,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->redirect(\"".$this->url_module."\");
     }
     
+    /**
+    * show edit form view
+    * \$id: id_$className (identifier value)
+    **/
     function edit(\$id)
     {
         $this->params_view
@@ -458,6 +482,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
+    /**
+    * save changes in to database and then redirect to list items.
+    * \$id: id_$className (identifier value)
+    **/
     function update(\$id)
     {
         $this->files
@@ -466,6 +494,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->redirect(\"".$this->url_module."\");
     }
     
+    /**
+    * Delete information from database and then redirect to list items.
+    * \$id: id_$className (identifier value)
+    **/
     function delete(\$id)
     {
         \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);
@@ -515,11 +547,17 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->useLayout(\"fastdevelphp/backend\");
 	}
     
+    /**
+    * default controller function
+    **/
     function index()
     {
         \$this->lists();
     }
     
+    /**
+    * show list items
+    **/
     function lists()
     {
         $this->params_view
@@ -527,6 +565,9 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/index\", \$data);
     }
     
+    /**
+    * show create form view
+    **/
     function create()
     {
         $this->params_view
@@ -536,6 +577,9 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
+    /**
+    * save information into database and then redirect to list items.
+    **/
     function save()
     {
         $this->files
@@ -544,6 +588,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->redirect(\"".$this->url_module."\");
     }
     
+    /**
+    * show edit form view
+    * \$id: id_$className (identifier value)
+    **/
     function edit(\$id)
     {
         $this->params_view
@@ -553,6 +601,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
+    /**
+    * save changes in to database and then redirect to list items.
+    * \$id: id_$className (identifier value)
+    **/
     function update(\$id)
     {
         $this->files
@@ -561,6 +613,10 @@ class ".ucwords($className)."_Controller extends FD_Management
         \$this->redirect(\"".$this->url_module."\");
     }
     
+    /**
+    * Delete information from database and then redirect to list items.
+    * \$id: id_$className (identifier value)
+    **/
     function delete(\$id)
     {
         \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);

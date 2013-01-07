@@ -1103,36 +1103,7 @@ body.scaffold input, body.scaffold select, body.scaffold textarea
     padding: 7px 4px !important;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+table .actions a
+{
+    line-height: 21px;
+}

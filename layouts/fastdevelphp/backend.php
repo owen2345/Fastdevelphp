@@ -31,8 +31,8 @@
     <script type="text/javascript" charset="utf-8">
     	$(document).ready(function() 
         {
-            $(".form_register h2").wrap("<div class='titleh' />");
-            $(".panel_listado h1").wrap("<div class='simplebox'><div class='titleh'/></div>");
+            //$(".form_register h2").wrap("<div class='titleh' />");
+            //$(".panel_listado h1").wrap("<div class='simplebox'><div class='titleh'/></div>");
         });
     </script>
 </head>
