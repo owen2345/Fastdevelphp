@@ -22,7 +22,7 @@ class FD_ManageModel
 	function save($generateKeyObject = true)
 	{
 	    $FD = getInstance();
-		$primary_key = $FD->Connection->DB->getPrimaryKey(get_class($this));
+        $primary_key = $this->fd_primary_key;
         $this->$primary_key = $FD->Connection->DB->save_object($this, $generateKeyObject);
         return $this;
 	}
@@ -46,7 +46,7 @@ class FD_ManageModel
     function getChildrens($name_attr_parent, $where = "")
     {
         $FD = getInstance();
-        $primary_key = $this->getPrimaryKey();
+        $primary_key = $this->fd_primary_key;
         return $FD->Connection->DB->get_objects(get_class($this), " $name_attr_parent = ".$this->$primary_key . ($where?" and ".$where:""));
     }
     
@@ -60,7 +60,7 @@ class FD_ManageModel
     function create_object($name_object,$array_valores=array(), $postfix = "")
     {
         $FD = getInstance();
-        $primary_key = $this->getPrimaryKey();
+        $primary_key = $this->fd_primary_key;
         $res = $FD->Connection->DB->create_object($name_object, $array_valores, $postfix);
         $res->$primary_key = $this->$primary_key;
         return $res;
@@ -74,20 +74,11 @@ class FD_ManageModel
 	function merge_values($array_values=array())
 	{
 	    $FD = getInstance();
-		$class = new ReflectionClass(get_class($this));				
-		$method=$class->getConstructor();
-		$params=$method->getParameters();
-        $alias_attrs = array(); 		    
-        if($class->hasProperty("alias_of_atributes"))
-            $alias_attrs = $this->alias_of_atributes;
+		$params = $FD->SQL->getFieldsTable(get_class($this));
 		foreach($params as $key_param => $param)
 		{
-			$name_atribut=$param->getName();
-            $name_attr = $FD->Connection->DB->getAttrVal($name_atribut, $array_values, $alias_attrs);  
-            if($name_attr)            
-                $this->$name_atribut=$array_values[$name_attr];
-            if(!in_array($name_atribut, $this->attrs_modify))
-                array_push($this->attrs_modify, $name_atribut);
+			if(key_exists($param, $array_values))
+                $this->setAttr($param, $array_values[$param]);
 		}
 		return $this; //->ia no es necesario retornar, se puede usar el mismo objeto
 	}
@@ -107,8 +98,8 @@ class FD_ManageModel
 	{	
 	    $FD = getInstance();		
         if(!$attr_foreingkey)
-            $attr_foreingkey = $this->getPrimaryKey();
-        $primary_key = $FD->Connection->DB->getPrimaryKey(get_class($this));
+            $attr_foreingkey = $this->fd_primary_key;
+        $primary_key = $this->fd_primary_key;
 		return $FD->Connection->DB->get_objects($table_name, " $attr_foreingkey = '".$this->$primary_key."'" . ($where?" and ".$where:""), $order_by, $limit);
 	}
     
@@ -125,7 +116,7 @@ class FD_ManageModel
     function foreing_key($table_name, $where = null, $attr_primarykey = null)
 	{
 	    $FD = getInstance();
-        $primary_key = $FD->Connection->DB->getPrimaryKey($table_name);
+        $primary_key = $FD->DB->create_object($table_name)->fd_primary_key;
         if(!$attr_primarykey)
             $attr_primarykey = $primary_key;
 		return $FD->Connection->DB->get_object($table_name, " $primary_key = '".$this->$attr_primarykey."'" . ($where?" and ".$where:""));
@@ -144,7 +135,6 @@ class FD_ManageModel
     
     public function __set($name, $value) 
     {
-        $name = $this->getAliasAttrName($name);
         $this->$name = $value;
         if(!in_array($name, $this->attrs_modify))
             array_push($this->attrs_modify, $name);
@@ -152,30 +142,7 @@ class FD_ManageModel
 
     public function __get($name) 
     {
-        $name = $this->getAliasAttrName($name);
-        $class = new ReflectionClass(get_class($this));        
-        if($class->hasProperty($name))
-            return $this->$name;
-        else
-            dieFastDevel("Doesn't exist attribute \"$name\" for model \"".get_class($this)."\"");
-    }
-    
-    /**
-     * busca en $alias_of_atributes el key que es igual a $alias.
-     * return attr_db_name.
-    */
-    protected function getAliasAttrName($alias)
-    {
-        $class = new ReflectionClass(get_class($this));        
-        if($class->hasProperty("alias_of_atributes"))
-        {
-            $aliases = array_keys($this->alias_of_atributes, $alias);
-            if(count($aliases))
-                return $aliases[0];
-            else
-                return $alias;
-        }
-        return $alias;
+        return $this->$name;
     }
     
     /**
@@ -183,6 +150,7 @@ class FD_ManageModel
     */    
     function getPrimaryKey()
     {
+        return $this->fd_primary_key;
         $FD = getInstance();
         return $FD->DB->getPrimaryKey(get_class($this));
     }
@@ -195,8 +163,18 @@ class FD_ManageModel
     */    
     function setAttr($attr, $val = "")
     {
-        $this->$attr = $val;
+        $this->__set($attr, $val);
         return $this;
+    }
+    
+    
+    /**
+     * $attr: nombre del atributo en el modelo
+     * retorna el valor del atributo en este objeto
+    */    
+    function getAttr($attr)
+    {
+        return $this->__get($attr);
     }
     
     /**

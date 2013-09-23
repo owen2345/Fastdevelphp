@@ -1,0 +1,51 @@
+<?php
+/**
+ * @package FastDevelPHP
+ * @author Ing. Florencio Peredo
+ * @email owen@sysdecom.com
+ * @company Systems Development Company "Sysdecom" srl.
+ * @license All rights reservate
+ * @version 2.0
+ * @copyright 2009
+ */ 
+class Fase_changed extends FD_ManageModel
+{	
+    var $fd_rules = array();
+    var $fd_primary_key = 'id_fasechanged';
+	
+	var $id_fasechanged; 
+	var $id; 
+	var $id_task; 
+	var $id_fase; 
+	var $comment_fasechanged; 
+	var $hoursdedicated_fasechanged; 
+	var $createat_fasechanged; 
+	var $current_fasechanged; 
+	var $previousid_fasechanged; 
+	var $id_feedback; 
+	
+    /**
+    //function executed before to save object.
+    function onSave(){    }*/
+    
+    /**
+    //function executed after to save object.
+    function afterSave(){     }*/
+    
+    /**
+    //function executed before to update object.
+    function onUpdate(){    }*/
+    
+    /**
+    //function executed after to update object.
+    function afterUpdate(){     }*/
+    
+    /**
+    //function executed before to delete object.
+    function onDelete(){    }*/
+    
+    /**
+    //function executed after to delete object.
+    function afterDelete(){     }*/
+}
+?>

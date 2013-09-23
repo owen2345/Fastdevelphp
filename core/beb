@@ -1,0 +1,4 @@
+[21-Sep-2013 16:49:30] PHP Fatal error:  Undefined class constant 'fd_primary_key' in /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php on line 25
+[21-Sep-2013 16:49:48] PHP Parse error:  syntax error, unexpected T_VARIABLE, expecting T_STRING in /www/fastdevelphp3/app/models/Company.php on line 14
+[21-Sep-2013 16:53:33] PHP Fatal error:  Undefined class constant 'fd_primary_key' in /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php on line 25
+[21-Sep-2013 16:55:15] PHP Fatal error:  Undefined class constant 'fd_primary_key' in /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php on line 25

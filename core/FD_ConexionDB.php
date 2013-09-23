@@ -2,8 +2,8 @@
 /**
  * @package FastDevelPHP
  * @author Ing. Florencio Peredo
- * @email owen@sysdecom.com
- * @company Systems Development Company "Sysdecom" srl.
+ * @email owen@skylogix.net
+ * @company Systems Development Company "skylogix" srl.
  * @license All rights reservate
  * @version 2.0
  * @copyright 2009
@@ -15,6 +15,7 @@
 		private $connection;
 		var $foreing_kes=array();
         var $tables = array();
+        private $table_fields = array(); 
 		function FD_ConexionDB()
 		{
 			fd_log("\n\n--------------------VISITED AT: ".date("Y-m-d H:i:s")."--------------------", true);
@@ -36,7 +37,7 @@
          * */
 		function execQuery($query, $show_query = false, $skypeLog = false)
 		{
-            if(!$skypeLog)
+            //if(!$skypeLog)
                 fd_log($query);
             if(USE_DB == "false" || USE_DB == "FALSE")
                 dieFastDevel("No puede realizar conexiones a MYSQL, debido a que tiene configurado trabajar sin Base de Datos.<br>
@@ -141,8 +142,17 @@
          **/
         function getFieldsTable($table = null)
         {
-            $this->execQuery("SHOW COLUMNS FROM ".strtolower($table), false, true);
-			return $this->getResultsQuery();
+            $table = strtolower($table);
+            if(key_exists($table, $this->table_fields))
+                return $this->table_fields[$table];
+                
+            $this->execQuery("SHOW COLUMNS FROM ".$table, false, true);
+            $res = array();
+			foreach($this->getResultsQuery() as $Field)
+                $res[] = strtolower($Field['Field']);
+            
+            $this->table_fields[$table] = $res;
+            return $res;
         }
 		
 /**
@@ -159,28 +169,15 @@ function retractDB($db, $prefix_ignore = "")
         $this->tables[] = strtolower($table);
 		if(!file_exists(MODELS_PATH.$table. '.php'))
 		{
-            $primary_key = $this->getKeysTable($table);
 			$fields = $this->getFieldsTable($table);
+            $primary_key = $this->getKeysTable($table);
 			$textFields = "";
 			$textFieldsEqual = "";
 			$textFieldsConstruct = "";			
 			foreach($fields as $field)
-			{
-				//print_r($field);echo "<br>";
-				$field["Field"]=strtolower($field["Field"]);
-				if($textFieldsConstruct)
-					$textFieldsConstruct.=", ";
-                if(strtoupper($field["Default"]) == "NULL")
-                    $textFieldsConstruct.= "\$".$field["Field"]." = null";
-				elseif(is_numeric($field["Default"]))
-                    $textFieldsConstruct.= "\$".$field["Field"]." = ".$field["Default"];
-                else
-                    $textFieldsConstruct.= "\$".$field["Field"]." = ''";
-                                				
+			{        				
 				$textFields.= "
-	var \$".$field["Field"]."; ";
-				$textFieldsEqual.= "
-		\$this->".$field["Field"]." = \$".$field["Field"].";";
+	var \$".$field."; ";
 			}
 			
 $fp = fopen(MODELS_PATH.$table. '.php',"a+");
@@ -188,23 +185,41 @@ fwrite($fp,"<?php
 /**
  * @package FastDevelPHP
  * @author Ing. Florencio Peredo
- * @email owen@sysdecom.com
- * @company Systems Development Company \"Sysdecom\" srl.
+ * @email owen@skylogix.net
+ * @company Systems Development Company \"skylogix\" srl.
  * @license All rights reservate
  * @version 2.0
  * @copyright 2009
  */ 
 class ".$table." extends FD_ManageModel
 {	
-    var \$alias_of_atributes = array();
     var \$fd_rules = array();
     var \$fd_primary_key = '$primary_key';
 	$textFields
 	
-	function __construct($textFieldsConstruct)
-	{
-		$textFieldsEqual
-	}
+    /**
+    //function executed before to save object.
+    function onSave(){    }*/
+    
+    /**
+    //function executed after to save object.
+    function afterSave(){     }*/
+    
+    /**
+    //function executed before to update object.
+    function onUpdate(){    }*/
+    
+    /**
+    //function executed after to update object.
+    function afterUpdate(){     }*/
+    
+    /**
+    //function executed before to delete object.
+    function onDelete(){    }*/
+    
+    /**
+    //function executed after to delete object.
+    function afterDelete(){     }*/
 }
 ?>");
 fclose($fp);

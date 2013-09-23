@@ -1,0 +1,526 @@
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:47:00--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:48:55--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:49:30--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:49:48--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:53:33--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:55:15--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 16:56:46--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:02:31--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:02:32--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:02:42--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog  where id_backlog = '149'  
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_object_by_id --- Line: 69
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: get_object --- Line: 123
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 161
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_object_by_id --- Line: 69
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: get_object --- Line: 123
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 164
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:02:43--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:03:24--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 26
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 35
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:06:43--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:07:09--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/Home_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:08:59--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+select * from backlog   
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: execQuery --- Line: 59
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM backlog
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: lists --- Line: 24
+File: /www/fastdevelphp3/app/controllers/admin/Backlog_Controller.php --- Function: get_objects --- Line: 33
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: create_object --- Line: 64
+File: /www/fastdevelphp3/core/FD_ManageDB.php --- Function: getFieldsTable --- Line: 186
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getDatabaseTables --- Line: 26
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM asign_project
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getFieldsTable --- Line: 33
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getDatabaseTables --- Line: 94
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM asign_project
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getFieldsTable --- Line: 102
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM asign_project
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getFieldsTable --- Line: 65
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM asign_project
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getFieldsTable --- Line: 65
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+
+
+--------------------VISITED AT: 2013-09-21 17:22:34--------------------
+
+
+SHOW TABLES FROM jirabol
+File: /www/fastdevelphp3/core/Owen.php --- Function: __construct --- Line: 235
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: FD_Management --- Line: 15
+File: /www/fastdevelphp3/core/FD_Management.php --- Function: FD_ConexionDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: retractDB --- Line: 28
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: getDatabaseTables --- Line: 166
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 128
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41
+
+
+SHOW COLUMNS FROM asign_project
+File: /www/fastdevelphp3/core/Owen.php --- Function: call_user_func_array --- Line: 239
+File: /www/fastdevelphp3/app/controllers/fastdevelphp/UI_scaffold_Controller.php --- Function: getFieldsTable --- Line: 65
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: execQuery --- Line: 149
+File: /www/fastdevelphp3/core/FD_ConexionDB.php --- Function: fd_log --- Line: 41

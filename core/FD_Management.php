@@ -8,7 +8,7 @@
  * @version 2.0
  * @copyright 2009
  */
-class FD_Management extends FD_Common
+class FD_Management
 {
 	var $layout="";
 	var $paramsLayout=array();
@@ -20,17 +20,19 @@ class FD_Management extends FD_Common
     var $Request;
     private $config_tmp = array();
     static $_instance;
+    private $core_folder = "../core/";
 	function FD_Management()
 	{
-        self::$_instance = $this;
+		self::$_instance = $this;
+        loadFileFastDevel(array($this->core_folder."FD_ConexionDB.php", $this->core_folder."FD_ManageDB.php", $this->core_folder."FD_ManageModel.php", $this->core_folder."FD_Url.php"));
         $Con = new FD_ConexionDB();
-        $this->Connection = (object)array("DB"=>new FD_ManageDB(), "SQL"=>$Con);
-        $this->DB = $this->Connection->DB;
-        $this->SQL = $this->Connection->SQL;
-        $this->Utility = new FD_Utility();
-        $this->Session = new FD_Session($this->Connection); 
+		$this->DB = new FD_ManageDB();
+		$this->Request = new FD_Url();
+        $this->SQL = $Con;
+        $this->Connection = (object)array("DB"=>$this->DB, "SQL"=>$this->SQL);
+        $this->Utility = $this->loadLibrary("FD_Utility");
+        $this->Session = $this->loadLibrary("FD_Session"); 
         $this->Session->updateFlashMessage();
-        $this->Request = new FD_Url();
 	}
 	
     /**
@@ -83,12 +85,12 @@ class FD_Management extends FD_Common
 		{	
 			$$name=$val;		
 		}
-        if($path = $this->Utility->checkPath(VIEWS_PATH.$view.".php"))
-        {
-            include($path);
-            $this->showBuffer(ob_get_clean());
-        }else
-            dieFastDevel("No existe la vista \"".$view.".php\"");
+        $view_ = FB_checkPath(VIEWS_PATH.$view.".php");
+        if($view_)
+            include($view_);
+        else
+            dieFastDevel("This view '$view' doesn't exist.");
+        $this->showBuffer(ob_get_clean());
 	}
 	
     /**
@@ -106,6 +108,7 @@ class FD_Management extends FD_Common
             
 		if(!count($collection))
             return;
+            
         $numIteration=0;
         foreach($collection as $Obj)
 		{
@@ -114,12 +117,12 @@ class FD_Management extends FD_Common
 			{
 				$$name=$val;		
 			}
-            if(file_exists(VIEWS_PATH.$view.".php"))
-            {
-                include(VIEWS_PATH.$view.".php");
-                $numIteration ++;
-            }else
-                dieFastDevel("No existe la vista \"".$view.".php\"");
+            $view_ = FB_checkPath(VIEWS_PATH.$view.".php");
+            if($view_)
+                include($view_);
+            else
+                dieFastDevel("This view '$view' doesn't exist.");
+            $numIteration ++;
 	 	}
 	}
 	
@@ -138,11 +141,11 @@ class FD_Management extends FD_Common
 		{	
 			$$name=$val;		
 		}
-        if($path = $this->Utility->checkPath(VIEWS_PATH.$view.".php"))
-            include($path);
+        $view_ = FB_checkPath(VIEWS_PATH.$view.".php");
+        if($view_)
+            include($view_);
         else
-            dieFastDevel("No existe la vista \"".$view.".php\"");
-	 	
+            dieFastDevel("This view '$view' doesn't exist.");
 	}
 	
 	private function showBuffer($contentView)
@@ -153,13 +156,14 @@ class FD_Management extends FD_Common
 		}
 		if($this->layout)
         {
-            if(file_exists(LAYOUTS_PATH.$this->layout.".php"))
-                include(LAYOUTS_PATH.$this->layout.".php");
+            $view_ = FB_checkPath(LAYOUTS_PATH.$this->layout.".php");
+            if($view_)
+                include($view_);
             else
-                dieFastDevel("No existe el Layout \"".$this->layout.".php\"");
-        }else
+                dieFastDevel("This Layout '$this->layout' doesn't exist.");
+        }
+        else
 		 	echo $contentView;
-		
 	}
     
     /**
@@ -217,8 +221,7 @@ class FD_Management extends FD_Common
     **/
 	function renderController($controllerName, $functionName="index", $layout = "", $params_layout = array())
 	{
-		$controllerName.="_Controller";
-		$o=new $controllerName();
+        $o = $this->loadController($controllerName);
 		$o->useLayout($layout?$layout:$this->layout, $params_layout);
 		$o->$functionName();
 	}
@@ -244,30 +247,9 @@ class FD_Management extends FD_Common
     **/
 	function loadLibrary($Classname, $params = array())
 	{
-		$class_name1 = $Classname;
-        $class_name=ucwords($Classname);
-        $Object;
-        if(file_exists("../library/".$class_name . '.php'))
-        {
-            if(!class_exists($class_name, false))
-                include "../library/".$class_name . '.php';
-            $reflection_class = new ReflectionClass($class_name);
-            $Object = $reflection_class->newInstanceArgs($params);
-                        
-        
-        }elseif(file_exists("../library/".$class_name1 . '.php'))
-        {
-            if(!class_exists($class_name1, false))
-                require "../library/".$class_name1 . '.php';
-            $reflection_class = new ReflectionClass($class_name1);
-            $Object = $reflection_class->newInstanceArgs($params);
-        
-        }else
-        {
-            header("HTTP/1.0 404 Not Found");
-            dieFastDevel("Not exist the library \"$class_name\" ");
-        }
-        
+        loadFileFastDevel(LIBRARIES_PATH.$Classname.".php");
+        $reflection_class = new ReflectionClass(ucwords($Classname));
+        $Object = $reflection_class->newInstanceArgs($params);
         return $Object;
 	}
         
@@ -278,7 +260,11 @@ class FD_Management extends FD_Common
     **/    
     function loadHelper($source)
 	{
-		loadFileFastDevel("../helpers/".$source);
+	   $view_ = FB_checkPath(HELPERS_PATH.$source);
+        if($view_)
+            include($view_);
+        else
+            dieFastDevel("This helper '$source' doesn't exist.");
 	}
     
     /**
@@ -293,7 +279,26 @@ class FD_Management extends FD_Common
             loadFileFastDevel("../confi/".$source);
             array_push($this->config_tmp, $source);
         }
-        
+    }
+    
+    /**
+     * Private function used for core functions
+     */
+    function loadModel($model_name)
+    {
+        loadFileFastDevel(MODELS_PATH.$model_name.".php");
+    }
+    
+    /**
+     * $controller_name: name of the controller to load
+     * $module: module where the controller is located of
+     * return controller object
+     */
+    function loadController($controller_name, $module = null)
+    {
+        $controller_name.="_Controller";
+        loadFileFastDevel(CONTROLLERS_PATH.($module?$module."/":"").$controller_name.".php");
+		return new $controllerName();
     }
 
     private function __clone(){ }

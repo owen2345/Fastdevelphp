@@ -25,7 +25,8 @@ class FD_ManageDB
 		$objects=array();
 		foreach($objects_db as $object_row)
 		{
-			$object = $this->create_object($name_object, $object_row);			
+			$object = $this->create_object($name_object, $object_row);
+            $object->attrs_modify = array();			
 			array_push($objects,$object);
 		}
 		return $objects;
@@ -79,7 +80,11 @@ class FD_ManageDB
         $FD->Connection->SQL->execQuery("select * from ".strtolower($name_object)." ".($where?" where ".$where:""). " ".($order_by?" order by ".$order_by:"")." order by $primary_key DESC".($limit?" limit ".$limit:" limit 0,1"));
 		$objects_db=$FD->Connection->SQL->getResultsQuery();
         if(count($objects_db))
-            return $this->create_object($name_object, $objects_db[0]);
+        {
+            $object = $this->create_object($name_object, $objects_db[0]);
+            $object->attrs_modify = array();
+            return $object;
+        }
         else
             return false;		
 	}
@@ -94,7 +99,11 @@ class FD_ManageDB
 	{
 		$r = $this->get_object($name_object, $where, $order_by, "0,1");
         if($r)
+        {
+            $r->attrs_modify = array();
             return $r;
+        }
+            
         elseif($name_object == "images")
             return $this->create_object($name_object)->url_image = "default.jpg";
         else
@@ -111,7 +120,8 @@ class FD_ManageDB
 		$primary_key = $this->getPrimaryKey($name_object);
         if(!$primary_key)        
             dieFastDevel("Debe indicar el primary key para '".ucwords($name_object)."'. <br>");
-		return $this->get_object($name_object, "$primary_key = '$id' ");
+		$object = $this->get_object($name_object, "$primary_key = '$id' ");
+        return $object;
 	}
     
     /**
@@ -151,7 +161,9 @@ class FD_ManageDB
 		$FD->Connection->SQL->execQuery("select * from ".strtolower($name_object)." ".($where?" where ".$where:""). " ".($order_by?" order by ".$order_by:""));
 		$objects_db=$FD->Connection->SQL->getResultsQuery();
 		$object_row=current($objects_db);
-		$object = $this->create_object($name_object,$object_row);		
+		$object = $this->create_object($name_object,$object_row);
+        if($object)
+            $object->attrs_modify = array();		
 		if($object_row)
             return $object;
         else
@@ -166,98 +178,52 @@ class FD_ManageDB
 	 */
 	function create_object($name_object,$array_valores=array(), $postfix = "")
 	{
-        $this->checkModel($name_object);
-	    $FD = getInstance();
+        $FD = getInstance();
+        $FD->loadModel($name_object);
 		$object = new $name_object;
 		if($array_valores)
 		{
-		    $class = new ReflectionClass($name_object);
-            $alias_attrs = array(); 		    
-            if($class->hasProperty("alias_of_atributes"))
-                $alias_attrs = $object->alias_of_atributes;
-						
-			$method=$class->getConstructor();
-			$params=$method->getParameters();
+            $params = $FD->SQL->getFieldsTable($name_object);
 			foreach($params as $key_param => $param)
 			{
-				$name_atribut=$param->getName();
-                $name_attr = $this->getAttrVal($name_atribut, $array_valores, $alias_attrs);  
-                if($name_attr)
-                    $object->$name_atribut=$array_valores[$postfix?$name_attr.$postfix:$name_attr];
+                if(key_exists($param, $array_valores))
+                    $object->setAttr($param, $array_valores[$param]);
 			}
 		}		
 		return $object;
 	}
-    
-    /**
-     * funcion usada por manage_model
-     */
-    function getAttrVal($name_atribut, $array_valores, $alias_attrs)
-    {
-        if(array_key_exists($name_atribut,$array_valores))
-            return $name_atribut;
-        elseif(array_key_exists(strtoupper($name_atribut),$array_valores))
-            return strtoupper($name_atribut);
-        if(array_key_exists($name_atribut, $alias_attrs))
-        {
-            $name_atribut = $alias_attrs[$name_atribut];
-            if(array_key_exists($name_atribut,$array_valores))
-                return $name_atribut;
-            elseif(array_key_exists(strtoupper($name_atribut),$array_valores))
-                return strtoupper($name_atribut);
-        }
-        return "";
-            
-    }
 	
 	/**
      * funcion llamada por los modelos.
+     * $generateKeyObject: deprecated
 	 */
 	function save_object($object, $generateKeyObject = true)
 	{
 	    $FD = getInstance();
 		$class = new ReflectionClass(get_class($object));		
 		$table_name=get_class($object);
-		$method=$class->getConstructor();
-		$params=$method->getParameters();		
-		$vals_object="";
-		$names_atributos="";
-        $primary_key = $this->getPrimaryKey($table_name);
-		if($generateKeyObject)
-            $object->$primary_key = $FD->Connection->SQL->getNewID($table_name, $primary_key);        		
+        //$params = $FD->SQL->getFieldsTable($table_name);		
+		$vals_object=array();
+		$names_atributos=array();
 		if($class->hasMethod("onSave"))
             $object->onSave();
-        if($class->hasProperty("before_save_functions"))
-            foreach($object->before_save_functions as $function)
-            {
-                $object->$function();
-            }
-        foreach($params as $key_param => $param)
+        
+        //foreach($params as $key_param => $param)
+        foreach($object->attrs_modify as $param)
 		{
-			$name_atribut=$param->getName();
-			// if this attribute have modify of before value = '' or has default value distinct of ''
-			if($object->$primary_key == "autoincrement" && $name_atribut == $primary_key){}
-            elseif(array_key_exists($name_atribut, $object->attrs_modify) || $object->$name_atribut !="")			
-				{
-				    if(is_null($object->$name_atribut))	
-                        $val="NULL";
-                    else
-				        $val="'".(str_replace(array("\\", "'"),array("\\\\", "\'"), $object->$name_atribut))."'";				    
-					$names_atributos?$names_atributos.=",".$name_atribut:$names_atributos.=$name_atribut;
-					$vals_object ? $vals_object.=",".$val:$vals_object.=$val;
-				}elseif(is_null($object->$name_atribut))
-                {
-                    $names_atributos?$names_atributos.=",".$name_atribut:$names_atributos.=$name_atribut;
-					$vals_object ? $vals_object.=",null":$vals_object.="null";
-                }
+            $names_atributos[] = $param;
+            $vals_object[] = "'".$object->getAttr($param)."'";
 		}
-		$FD->Connection->SQL->execQuery("INSERT INTO ".strtolower($table_name).
-			" ($names_atributos) VALUE(".$vals_object.")");
-        if($object->$primary_key == "autoincrement")
-        	$object->$primary_key=mysql_insert_id();
+        $consulta = "INSERT INTO ".strtolower($table_name).
+			" (".implode(", ", $names_atributos).") VALUE(".implode(",", $vals_object).")";
+		$FD->Connection->SQL->execQuery($consulta);
+        $primary_key = $object->fd_primary_key;
+        $object->setAttr($primary_key, mysql_insert_id());
+        
         if($class->hasMethod("afterSave"))
             $object->afterSave();
-		return $object->$primary_key;
+		
+        return $object->getAttr($primary_key);
 	}
 	
 	/**
@@ -268,34 +234,23 @@ class FD_ManageDB
 	    $FD = getInstance();
 		$class = new ReflectionClass(get_class($object));
 		$table_name=get_class($object);
-		$method=$class->getConstructor();
-		$params=$method->getParameters();
-		$vals_object="";
+        //$params = $FD->SQL->getFieldsTable($table_name);
+		$vals_object=array();
         if($class->hasMethod("onUpdate"))
             $object->onUpdate();
-		foreach($params as $key_param => $param)
+		//foreach($params as $key_param => $param)
+        foreach($object->attrs_modify as $param)
 		{
-			$name_atribut=$param->getName();
-            if(in_array($name_atribut, $object->attrs_modify) || $object->$name_atribut !="" || is_numeric($object->$name_atribut))
-			{
-				//if($object->$name_atribut===NULL)
-                if(is_null($object->$name_atribut))	
-                    $val="NULL";
-                else
-                    $val="'".(str_replace(array("\\", "'"),array("\\\\", "\'"), $object->$name_atribut))."'";
-				$vals_object?$vals_object.=",".$name_atribut."=$val":$vals_object.="".$name_atribut."=$val";
-			
-            }elseif(is_null($object->$name_atribut))
-            {
-                $vals_object?$vals_object.=",".$name_atribut."=null":$vals_object.="".$name_atribut."=null";
-            }
-				
+            if(is_null($object->getAttr($param)))
+                $vals_object[] = "$param = null";
+            else
+                $vals_object[] = " $param = '".(str_replace(array("\\", "'"),array("\\\\", "\'"), $object->getAttr($param)))."'";
 		}
 		$condicion="";
-        $key = $this->getPrimaryKey($table_name);
+        $key = $object->fd_primary_key;
         $condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
 					
-		$consulta="UPDATE ".strtolower($table_name)." SET $vals_object WHERE ".$condicion;        
+		$consulta="UPDATE ".strtolower($table_name)." SET ".implode(", ", $vals_object)." WHERE ".$condicion;        
 		$FD->Connection->SQL->execQuery($consulta);
         if($class->hasMethod("afterUpdate"))
             $object->afterUpdate();
@@ -309,12 +264,10 @@ class FD_ManageDB
 	    $FD = getInstance();
 		$class = new ReflectionClass(get_class($object));
 		$table_name=get_class($object);
-		$method=$class->getConstructor();
-		$params=$method->getParameters();
 		$condicion="";
         if($class->hasMethod("onDelete"))
             $object->onDelete();
-        $key = $this->getPrimaryKey($table_name);
+        $key = $object->fd_primary_key;
         $condicion==""?$condicion=$key." = ".$object->$key:$condicion.= " and ".$key." = ".$object->$key;
 		$consulta="DELETE FROM ".strtolower($table_name)." WHERE $condicion";
 		$FD->Connection->SQL->execQuery($consulta);
@@ -327,29 +280,11 @@ class FD_ManageDB
 	 */
     function getPrimaryKey($name_object)
     {
-        $this->checkModel($name_object);
         $name_object = ucwords($name_object);
         $FD = getInstance();
-        
-        $class = new ReflectionClass($name_object);
-        if($class->hasProperty("fd_primary_key"))
-            return $this->create_object($name_object)->fd_primary_key;
-        
-        $key = $FD->Connection->SQL->getKeysTable($name_object);
-        if($key)
-            return $key;
-        else
-            dieFastDevel("No existe la tabla '".$name_object."'. <br>");        
-    }
-    
-    private function checkModel($name_object)
-    {
-        $FD = getInstance();
-        if(in_array(strtolower($name_object), $FD->SQL->tables))
-            return true;
-        else
-            dieFastDevel("No existe el modelo '".$name_object."'. <br>");
+        $FD->loadModel($name_object);
+        $a = new $name_object();
+        return $a->fd_primary_key;
     }
 }
-
 ?>

@@ -3,8 +3,8 @@
 /**
  * @package FastDevelPHP
  * @author Ing. Florencio Peredo
- * @email owen@sysdecom.com
- * @company Systems Development Company "Sysdecom" srl.
+ * @email owen@skylogix.net
+ * @company Systems Development Company "Skylogix" srl.
  * @license All rights reservate
  * @version 2.0
  * @copyright 2009
@@ -29,6 +29,8 @@ class FD_Scafold
     function FD_Scafold($tableName, $datas, $fields = array(), $simple = true, $module_name = null)
     {
         $FD = getInstance();
+        $this->controller_dir = CONTROLLERS_PATH;
+        $this->view_dir = VIEWS_PATH;
         $this->simple = $simple;
         $this->Connection = $FD->Connection;
         $this->datas = $datas;
@@ -38,20 +40,21 @@ class FD_Scafold
         $this->fields = $fields;
         if($module_name)
         {
-            $this->controller_dir .= '/'.$module_name;
-            $this->view_dir .= '/'.$module_name;
-            if(!file_exists("../".$this->controller_dir))
+            $this->controller_dir .= $module_name;
+            $this->view_dir .= $module_name;
+            if(!file_exists($this->controller_dir))
             {
-                mkdir("../".$this->controller_dir, 0777);
+                mkdir($this->controller_dir, 0777);
                 echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->controller_dir/\" was created!</a></div>";
             }
                  
-            if(!file_exists("../".$this->view_dir))
+            if(!file_exists($this->view_dir))
             {
-                mkdir("../".$this->view_dir, 0777); 
+                mkdir($this->view_dir, 0777);
                 echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->view_dir/\" was created!</a></div>";
             }
-                
+            $this->view_dir .= "/";
+            $this->controller_dir .= "/";
             $this->url_module = "$module_name/".$this->url_module;              
         }
                 
@@ -85,10 +88,12 @@ class FD_Scafold
         
     function FD_createViews_scaffold($className, $simple = true)
     {
-        if(!file_exists("../".$this->view_dir."/$className"))
+        if(!file_exists($this->view_dir."$className"))
         {
-            mkdir("../".$this->view_dir."/$className", 0777);
-            echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->view_dir/$className/\" was created!</a></div>";
+            $old = umask(0);
+            mkdir($this->view_dir."$className", 0777);
+            umask($old);
+            echo "<div class=\"albox succesbox\"><b>Succes :</b>Folder \"$this->view_dir$className/\" was created!</a></div>";
         }
             
         $this->FD_createFormView($className);
@@ -104,9 +109,9 @@ class FD_Scafold
         $FD = getInstance();
         $Object = $this->Connection->DB->create_object($className);        
         $primaryKey = $Object->getPrimaryKey();
-        if(file_exists("../".$this->view_dir."/".$className.'/form.php'))        
+        if(file_exists($this->view_dir.$className.'/form.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/form.php\" view already exist</b> </div>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/form.php\" view already exist</b> </div>";
             return;
         }
         
@@ -166,15 +171,26 @@ class FD_Scafold
                     $val_attr = "\$this->Utility->getFileLink(\"../uploads/\".$".$className."->$attrName, ROOT_PATH.\"uploads/\".$".$className."->$attrName)";
                     $encitype = "multipart/form-data";
                     
-                    $typeHtml = "<input type='file' name='file_$attrName' class='input_file $rules' />";
-                                
+                    $typeHtml = "<input type='file' name='FD_$attrName' class='input_file $rules' />
+                    <?php if($".$className."->$attrName): ?>
+                        <label class='preview_select'><input type=\"checkbox\" name=\"FD_del_$attrName\" value=\"1\" /> Delete (<a target=\"_blank\" class=\"link_preview\" href=\"<?php echo ROOT_PATH.'uploads/'.$".$className."->$attrName ?>\" title=\"Preview\">Preview</a>)</label> 
+                    <?php endif ?>";
+                    $ftypes = implode("','", explode(",", str_replace(" ", "", $data_val["file"])));
                     $this->files .= "
-        
-        \$res_file = \$this->Utility->uploadFile('file_$attrName', '../uploads/'); //uploading file
+        /*** upload file ****/                    
+        \$res_file = \$this->Utility->uploadFile('FD_$attrName', '../uploads/', ".($ftypes?"array('$ftypes')":"null")."); //uploading file
         if(!\$res_file[\"error\"]) //on file uploaded
             \$this->Request->setParam_POST(\"$attrName\", \$res_file['file']);
-        else //fail on file upload 
-            \$this->Session->addFlashMessage(\"file_$attrName\", \$res_file['msg'], 2);
+        elseif(\$res_file['error_type'] != \"no_file\") //file error.
+            \$this->Session->addFlashMessage(\"FD_$attrName\", \$res_file['msg'], 2);
+        
+        if(\$this->Request->getParam_POST(\"FD_del_$attrName\")) //unassigned file
+        {
+            \$this->Session->addFlashMessage(\"FD_$attrName\", \"Your file was unassigned. \");
+            \$this->Request->setParam_POST(\"$attrName\", \"\");
+        }
+        /*** end upload file ****/
+        
         ";
                                     
                 break;
@@ -194,8 +210,13 @@ class FD_Scafold
                     
                     $this->params_view .= "
         \$data['$aux_name'] = array(".join(", ", $aux).");";
-                                            
-                    $typeHtml = "<?php echo \$this->Utility->createGroupChecks(array(\"name\"=>\"$attrName\", \"class\"=>\"input_checkbox $rules\"), \$$aux_name, array(\$".$className."->$attrName)) ?>";
+                        $typeHtml = "<?php echo \$this->Utility->createGroupChecks(array(\"name\"=>\"$attrName\", \"class\"=>\"input_checkbox $rules\"), \$$aux_name, array(\$".$className."->$attrName)) ?>";
+                break;
+                
+                case "single_checkbox": //pending in form
+                    $val_attr = "\$".$className."->$attrName?'Active':'Inactive'";
+                    $typeHtml = "<input type='hidden' name='zoom_tablet' value=\"0\" />
+                                <input type='checkbox' class='input_checkbox $rules' name='$attrName' value='1' <?php echo \$".$className."->$attrName?\"checked=''\":\"\" ?> />";
                 break;
                 
                 case "radio":
@@ -226,32 +247,36 @@ class FD_Scafold
             }
             
         $inputs .= "
-                    <li>
-                        <label class='label_form'>".$data_val["fieldtext"]."</label>
-                        $typeHtml
-                    </li>";
+                        <li>
+                            <label class='label_form'>".$data_val["fieldtext"]."</label>
+                            $typeHtml
+                        </li>";
                     
             if($this->simple)
             {
                 $this->row_titles .= "
-                        <th>".$data_val["fieldtext"]."</th>";
+                            <th>".$data_val["fieldtext"]."</th>";
                 $this->row_body .= "
-                            <td><?php  echo $val_attr ?></td>";
+                                    <td><?php  echo $val_attr ?></td>";
             }else
             {
                 $this->row_titles .= "
-                        <th class='sorter <?php echo \$sort_order_by=='$attrName'?'sorted':'' ?>'> 
-                            <a href='<?php echo ROOT_PATH ?>$this->url_module/lists/$attrName/<?php echo \$sort_dir=='ASC'?'DESC':'ASC' ?>/<?php echo \$current_pag?>'>".$data_val["fieldtext"]."</a>
-                        </th>";
+                            <th class='sorter <?php echo \$sort_order_by=='$attrName'?'sorted':'' ?>'> 
+                                <a href='<?php echo ROOT_PATH ?>$this->url_module/lists/$attrName/<?php echo \$sort_dir=='ASC'?'DESC':'ASC' ?>/<?php echo \$current_pag?>'>".$data_val["fieldtext"]."</a>
+                            </th>";
                 $this->row_body .= "
-                            <td><?php  echo $val_attr ?></td>";
+                                    <td><?php  echo $val_attr ?></td>";
             }
             
         }
         
         $this->default_values = join(', ', $this->default_values);
         
-        $fp = fopen("../".$this->view_dir."/".$className.'/form.php',"a+");
+        $fp = fopen($this->view_dir.$className.'/form.php',"a+");
+        $old = umask(0);
+        chmod($this->view_dir.$className.'/form.php', 0666);
+        umask($old);
+        
 fwrite($fp,"
         <div class='form_register simplebox' id='form_$className'>
             <script>
@@ -282,9 +307,9 @@ fwrite($fp,"
     function FD_createListView($className)
     {
         $FD = getInstance();
-        if(file_exists("../".$this->view_dir."/".$className.'/index.php'))        
+        if(file_exists($this->view_dir.$className.'/index.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/index.php\" view already exist.</b> </div>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
             return;
         }
                 
@@ -293,14 +318,18 @@ fwrite($fp,"
         $row_body = $this->row_body;
         $primaryKey = $FD->DB->getPrimaryKey($className);
                 
-        $fp = fopen("../".$this->view_dir."/".$className.'/index.php',"a+");
+        $fp = fopen($this->view_dir.$className.'/index.php',"a+");
+        $old = umask(0);
+        chmod($this->view_dir.$className.'/index.php', 0666);
+        umask($old);
 fwrite($fp," 
         <div class='panel_listado simplebox'>
             <div class=\"titleh\"><h3>List $className</h3></div>
             <div class=\"body\">
                 <table id='listado_$className' class='tablesorter'>
                     <thead>
-                        <tr>$row_titles<th>Actions</th>
+                        <tr>$row_titles
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -336,9 +365,9 @@ fwrite($fp,"
     function FD_createListView_simple($className)
     {
         $FD = getInstance();
-        if(file_exists("../".$this->view_dir."/".$className.'/index.php'))        
+        if(file_exists($this->view_dir.$className.'/index.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."/$className/index.php\" view already exist.</b> </div>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
             return;
         }
         
@@ -346,7 +375,10 @@ fwrite($fp,"
         $row_body = $this->row_body;
         $primaryKey = $FD->DB->getPrimaryKey($className);
         
-        $fp = fopen("../".$this->view_dir."/".$className.'/index.php',"a+");
+        $fp = fopen($this->view_dir.$className.'/index.php',"a+");
+        $old = umask(0);
+        chmod($this->view_dir.$className.'/index.php', 0666);
+        umask($old);
 fwrite($fp," 
         <div class='panel_listado simplebox'>
             <div class=\"titleh\"><h3>List $className</h3></div>
@@ -354,7 +386,8 @@ fwrite($fp,"
                 <table id='listado_$className'>
                     <thead>
                         <tr>
-                            $row_titles<th>Actions</th>
+                            $row_titles
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -390,22 +423,25 @@ fwrite($fp,"
         if($this->module_name)
             $module_name = $this->module_name.'/';
             
-        if(file_exists("../".$this->controller_dir."/".ucwords($className).'_Controller.php'))        
+        if(file_exists($this->controller_dir.ucwords($className).'_Controller.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir."/".$className."_Controller.php\" controller already exist.</b> </div>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
             return;
         }
         
         $object = $this->Connection->DB->create_object("$className");        
         $primaryKey = $object->getPrimaryKey();
         
-        $fp = fopen("../".$this->controller_dir."/".ucwords($className).'_Controller.php',"a+");
+        $fp = fopen($this->controller_dir.ucwords($className).'_Controller.php',"a+");
+        $old = umask(0);
+        chmod($this->controller_dir.ucwords($className).'_Controller.php', 0666);
+        umask($old);
 fwrite($fp,"<?php
 /**
  * @package FastDevelPHP
  * @author Ing. Florencio Peredo
- * @email owen@sysdecom.com
- * @company Systems Development Company \"Sysdecom\" srl.
+ * @email owen@skylogix.net
+ * @company Systems Development Company \"Skylogix\" srl.
  * @license All rights reservate
  * @version 2.0
  * @copyright 2009
@@ -454,7 +490,7 @@ class ".ucwords($className)."_Controller extends FD_Management
         $this->params_view
         \$data[\"$className\"] = \$this->DB->create_object(\"$className\", array($this->default_values));
         \$data[\"action\"] = \"save\";
-        \$data[\"submitText\"] = \"Registrar\";        
+        \$data[\"submitText\"] = \"Register\";        
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
@@ -465,7 +501,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         $this->files
         \$this->DB->create_object(\"$className\", \$this->Request->getParams_POST())->save();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue guardado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item saved!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -478,7 +514,7 @@ class ".ucwords($className)."_Controller extends FD_Management
         $this->params_view
         \$data[\"$className\"] = \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);
         \$data[\"action\"] = \"update/\$".$className."->$primaryKey\";
-        \$data[\"submitText\"] = \"Actualizar\";
+        \$data[\"submitText\"] = \"Update\";
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
@@ -490,7 +526,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         $this->files
         \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$this->Request->getParams_POST())->update();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue actualizado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item updated!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -502,7 +538,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);
         \$".$className."->delete();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue eliminado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item deleted!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -519,22 +555,25 @@ class ".ucwords($className)."_Controller extends FD_Management
         if($this->module_name)
             $module_name = $this->module_name.'/';
             
-        if(file_exists("../".$this->controller_dir."/".ucwords($className).'_Controller.php'))        
+        if(file_exists($this->controller_dir.ucwords($className).'_Controller.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir."/".$className."_Controller.php\" controller already exist.</b> </div>";
+            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
             return;
         }
 
         $object = $this->Connection->DB->create_object("$className");
         $primaryKey = $object->getPrimaryKey();
 
-        $fp = fopen("../".$this->controller_dir."/".ucwords($className).'_Controller.php',"a+");
+        $fp = fopen($this->controller_dir.ucwords($className).'_Controller.php',"a+");
+        $old = umask(0);
+        chmod($this->controller_dir.ucwords($className).'_Controller.php', 0666);
+        umask($old);
 fwrite($fp,"<?php
 /**
  * @package FastDevelPHP
  * @author Ing. Florencio Peredo
- * @email owen@sysdecom.com
- * @company Systems Development Company \"Sysdecom\" srl.
+ * @email owen@skylogix.net
+ * @company Systems Development Company \"Skylogix\" srl.
  * @license All rights reservate
  * @version 2.0
  * @copyright 2009
@@ -573,7 +612,7 @@ class ".ucwords($className)."_Controller extends FD_Management
         $this->params_view
         \$data[\"$className\"] = \$this->DB->create_object(\"$className\", array($this->default_values));
         \$data[\"action\"] = \"save\";
-        \$data[\"submitText\"] = \"Registrar\";        
+        \$data[\"submitText\"] = \"Register\";        
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
@@ -584,7 +623,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         $this->files
         \$this->DB->create_object(\"$className\", \$this->Request->getParams_POST())->save();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue guardado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item saved!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -597,7 +636,7 @@ class ".ucwords($className)."_Controller extends FD_Management
         $this->params_view
         \$data[\"$className\"] = \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);
         \$data[\"action\"] = \"update/\$".$className."->$primaryKey\";
-        \$data[\"submitText\"] = \"Actualizar\";
+        \$data[\"submitText\"] = \"Update\";
         \$this->loadView(\"$module_name$className/form\", \$data);
     }
     
@@ -609,7 +648,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         $this->files
         \$this->DB->get_object_by_id(\"$className\", \$id)->merge_values(\$this->Request->getParams_POST())->update();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue actualizado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item updated!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -621,7 +660,7 @@ class ".ucwords($className)."_Controller extends FD_Management
     {
         \$".$className." = \$this->DB->get_object_by_id(\"$className\", \$id);
         \$".$className."->delete();
-        \$this->Session->addFlashMessage(\"action\", \"El item fue eliminado!\", 0);
+        \$this->Session->addFlashMessage(\"action\", \"Item deleted!\", 0);
         \$this->redirect(\"".$this->url_module."\");
     }
     
@@ -629,7 +668,7 @@ class ".ucwords($className)."_Controller extends FD_Management
 ?>");
     fclose($fp);
     
-    echo "<div class=\"albox succesbox\"><b>Succes :</b> Controller \"".$this->controller_dir."/".ucwords($className)."_Controller.php\" was created!</div>";
+    echo "<div class=\"albox succesbox\"><b>Succes :</b> Controller \"".$this->controller_dir.ucwords($className)."_Controller.php\" was created!</div>";
     }
     
 }

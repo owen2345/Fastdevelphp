@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /project path/
+RewriteBase /fastdevelphp3/
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ core/Owen.php?url_fastdevel=$1 [QSA,L]
-RewriteRule ^$ core/Owen.php?url_fastdevel=$1 [QSA,L]
+#RewriteRule ^$ core/Owen.php?url_fastdevel=$1 [QSA,L]
 </IfModule>
