@@ -45,7 +45,7 @@ class UI_scaffold_Controller extends FD_Management
         
         ob_start();
         loadFileFastDevel("../core/FD_Scafold.php");
-        new FD_Scafold($_POST["model"], $_POST["data"], null, $_POST["type_scaffold"], $_POST["module_name"]);
+        new FD_Scafold($_POST["model"], $_POST["data"], null, $_POST["type_scaffold"], $_POST["module_name"], $this->Request->getParam_POST("force_replace"));
         $content = ob_get_clean();
         $this->loadView("fastdevelphp/ui_scaffold/generate", array("content"=>$content));
     }

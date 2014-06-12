@@ -57,7 +57,10 @@
             </select>
             <strong>OR Create one: </strong>
             <input type="text" id="module_name" name="module_name" />
-            
+        </li>
+        <li class="st-form-line">
+            <label class="st-labeltext">Replace if exist</label>
+            <input type="checkbox" name="force_replace" value="1" />
         </li>
         <li class="st-form-line">
             <label class="st-labeltext">Type scaffold: </label>

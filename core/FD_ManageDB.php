@@ -178,6 +178,7 @@ class FD_ManageDB
 	 */
 	function create_object($name_object,$array_valores=array(), $postfix = "")
 	{
+        $array_valores = array_change_key_case($array_valores, CASE_LOWER);
         $FD = getInstance();
         $FD->loadModel($name_object);
 		$object = new $name_object;
@@ -212,7 +213,8 @@ class FD_ManageDB
         foreach($object->attrs_modify as $param)
 		{
             $names_atributos[] = $param;
-            $vals_object[] = "'".$object->getAttr($param)."'";
+            //$vals_object[] = "'".$object->getAttr($param)."'";
+            $vals_object[] = "'".(str_replace(array("\\", "'"),array("\\\\", "\'"), $object->getAttr($param)))."'";
 		}
         $consulta = "INSERT INTO ".strtolower($table_name).
 			" (".implode(", ", $names_atributos).") VALUE(".implode(",", $vals_object).")";
@@ -234,7 +236,6 @@ class FD_ManageDB
 	    $FD = getInstance();
 		$class = new ReflectionClass(get_class($object));
 		$table_name=get_class($object);
-        //$params = $FD->SQL->getFieldsTable($table_name);
 		$vals_object=array();
         if($class->hasMethod("onUpdate"))
             $object->onUpdate();

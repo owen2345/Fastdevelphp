@@ -62,7 +62,7 @@ class FD_ManageModel
         $FD = getInstance();
         $primary_key = $this->fd_primary_key;
         $res = $FD->Connection->DB->create_object($name_object, $array_valores, $postfix);
-        $res->$primary_key = $this->$primary_key;
+        $res->setAttr($primary_key, $this->$primary_key);
         return $res;
     }
     
@@ -73,6 +73,7 @@ class FD_ManageModel
     */
 	function merge_values($array_values=array())
 	{
+        $array_values = array_change_key_case($array_values, CASE_LOWER);
 	    $FD = getInstance();
 		$params = $FD->SQL->getFieldsTable(get_class($this));
 		foreach($params as $key_param => $param)
@@ -135,8 +136,11 @@ class FD_ManageModel
     
     public function __set($name, $value) 
     {
+        $name = strtolower($name);
         $this->$name = $value;
-        if(!in_array($name, $this->attrs_modify))
+        $FD = getInstance();
+        $Fields = $FD->SQL->getFieldsTable(get_class($this));
+        if(!in_array($name, $this->attrs_modify) && in_array($name, $Fields))
             array_push($this->attrs_modify, $name);
     }
 

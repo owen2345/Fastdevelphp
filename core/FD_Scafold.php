@@ -26,7 +26,8 @@ class FD_Scafold
     var $row_titles;
     var $row_body;
     var $simple = true;
-    function FD_Scafold($tableName, $datas, $fields = array(), $simple = true, $module_name = null)
+    var $force_replace;
+    function FD_Scafold($tableName, $datas, $fields = array(), $simple = true, $module_name = null, $force_replace = false)
     {
         $FD = getInstance();
         $this->controller_dir = CONTROLLERS_PATH;
@@ -38,6 +39,7 @@ class FD_Scafold
         $this->url_module = $className;
         $this->module_name = $module_name;
         $this->fields = $fields;
+        $this->force_replace = $force_replace;
         if($module_name)
         {
             $this->controller_dir .= $module_name;
@@ -111,8 +113,15 @@ class FD_Scafold
         $primaryKey = $Object->getPrimaryKey();
         if(file_exists($this->view_dir.$className.'/form.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/form.php\" view already exist</b> </div>";
-            return;
+            if($this->force_replace)
+            {
+                unlink($this->view_dir.$className.'/form.php');
+                echo "<div class=\"albox warningbox\"><b>Warning :</b>File \"$this->view_dir$className/form.php\" was deleted!</a></div>";
+            }else
+            {
+                echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/form.php\" view already exist</b> </div>";
+                return;
+            }
         }
         
         $inputs = "";
@@ -309,8 +318,15 @@ fwrite($fp,"
         $FD = getInstance();
         if(file_exists($this->view_dir.$className.'/index.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
-            return;
+            if($this->force_replace)
+            {
+                unlink($this->view_dir.$className.'/index.php');
+                echo "<div class=\"albox warningbox\"><b>Warning :</b>File \"$this->view_dir$className/index.php\" was deleted!</a></div>";
+            }else
+            {
+                echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
+                return;
+            }
         }
                 
         //$primaryKey = $object->getPrimaryKey();
@@ -367,8 +383,15 @@ fwrite($fp,"
         $FD = getInstance();
         if(file_exists($this->view_dir.$className.'/index.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
-            return;
+            if($this->force_replace)
+            {
+                unlink($this->view_dir.$className.'/index.php');
+                echo "<div class=\"albox warningbox\"><b>Warning :</b>File \"$this->view_dir$className/index.php\" was deleted!</a></div>";
+            }else
+            {
+                echo "<div class=\"albox errorbox\"><b>Error : \"".$this->view_dir."$className/index.php\" view already exist.</b> </div>";
+                return;
+            }
         }
         
         $row_titles = $this->row_titles;
@@ -425,8 +448,15 @@ fwrite($fp,"
             
         if(file_exists($this->controller_dir.ucwords($className).'_Controller.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
-            return;
+            if($this->force_replace)
+            {
+                unlink($this->controller_dir.ucwords($className).'_Controller.php');
+                echo "<div class=\"albox warningbox\"><b>Warning :</b>File \"".$this->controller_dir.ucwords($className)."_Controller.php\" was deleted!</a></div>";
+            }else
+            {
+                echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
+                return;
+            }
         }
         
         $object = $this->Connection->DB->create_object("$className");        
@@ -557,8 +587,15 @@ class ".ucwords($className)."_Controller extends FD_Management
             
         if(file_exists($this->controller_dir.ucwords($className).'_Controller.php'))        
         {
-            echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
-            return;
+            if($this->force_replace)
+            {
+                unlink($this->controller_dir.ucwords($className).'_Controller.php');
+                echo "<div class=\"albox warningbox\"><b>Warning :</b>File \"".$this->controller_dir.ucwords($className)."_Controller.php\" was deleted!</a></div>";
+            }else
+            {
+                echo "<div class=\"albox errorbox\"><b>Error : \"".$this->controller_dir.$className."_Controller.php\" controller already exist.</b> </div>";
+                return;
+            }
         }
 
         $object = $this->Connection->DB->create_object("$className");
